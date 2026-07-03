@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===== AUTH =====
 function showLogin() {
   // Always redirect to the central login page
-  window.location.href = 'login.html';
+  window.location.href = 'index.html';
 }
 
 function showDashboard() {

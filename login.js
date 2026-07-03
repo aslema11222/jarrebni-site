@@ -4,7 +4,7 @@ document.getElementById('clientCard').addEventListener('click', (e) => {
   const card = document.getElementById('clientCard');
   card.style.transform = 'scale(0.96)';
   card.querySelector('.role-btn').innerHTML = '<span>جاري الدخول...</span>';
-  setTimeout(() => { window.location.href = 'index.html'; }, 450);
+  setTimeout(() => { window.location.href = 'shop.html'; }, 450);
 });
 
 // ===== ADMIN CARD =====

@@ -9,7 +9,8 @@
       "PowerShell([System.Diagnostics.Process]::Start\\(\"c:\\\\Users\\\\Asus\\\\OneDrive\\\\Documents\\\\Bureau\\\\SITE  FRUIT JARREBNI\\\\index.html\"\\))",
       "PowerShell(Start-Process \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" -ArgumentList \"https://app.netlify.com/drop\")",
       "PowerShell(Start-Process \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" -ArgumentList \"https://app.netlify.com/projects/sparkly-centaur-f4526b/overview\")",
-      "PowerShell(& \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" \"c:\\\\Users\\\\Asus\\\\OneDrive\\\\Documents\\\\Bureau\\\\SITE  FRUIT JARREBNI\\\\login.html\")"
+      "PowerShell(& \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" \"c:\\\\Users\\\\Asus\\\\OneDrive\\\\Documents\\\\Bureau\\\\SITE  FRUIT JARREBNI\\\\login.html\")",
+      "PowerShell(& \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" \"https://sparkly-centaur-f4526b.netlify.app\")"
     ]
   }
 }

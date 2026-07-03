@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>جربني - فواكه وخضروات طازجة</title>
+  <meta name="description" content="جربني - أطيب الفواكه والخضروات الطازجة. توصيل سريع إلى باب منزلك في بنزرت الشمالية. جودة مضمونة وأسعار منافسة." />
+  <meta name="keywords" content="فواكه, خضروات, طازجة, توصيل, جربني, تونس, بنزرت" />
+  <meta property="og:title" content="جربني - فواكه وخضروات طازجة" />
+  <meta property="og:description" content="أطيب الفواكه والخضروات الطازجة بتوصيل سريع إلى منزلك" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#E8820C" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍊</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== PROMO BAR ===== -->
+  <div class="promo-bar" id="promoBar">
+    <div class="container promo-inner">
+      <span id="promoText">🔥 عرض الأسبوع: اطلب الآن واستمتع بتوصيل مجاني!</span>
+      <button class="promo-close" id="promoClose" aria-label="إغلاق">×</button>
+    </div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-circle">
+          <span class="logo-fruits">🍊🍎🍌</span>
+          <span class="logo-name">جربني</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="#home">الرئيسية</a>
+        <a href="#products">منتجاتنا</a>
+        <a href="#why-us">لماذا جربني</a>
+        <a href="#order">اطلب الآن</a>
+        <a href="#contact">تواصل معنا</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="home">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-text">
+        <p class="hero-tag">🚚 توصيل سريع إلى باب منزلك</p>
+        <h1>أطيب الفواكه<br /><span>والخضروات</span><br />الطازجة</h1>
+        <p class="hero-desc">
+          نجلب لك أفضل المنتجات الطازجة مباشرة من المزارع إلى منزلك.
+          جودة عالية، أسعار منافسة، وتوصيل سريع.
+        </p>
+        <div class="hero-actions">
+          <a href="#order" class="btn btn-primary">اطلب الآن</a>
+          <a href="#products" class="btn btn-outline">تصفح المنتجات</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong>+500</strong><span>عميل راضٍ</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><strong>+50</strong><span>نوع من المنتجات</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><strong>24h</strong><span>توصيل سريع</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="big-circle">
+          <div class="fruits-display">
+            <span class="fruit-big f1">🍊</span>
+            <span class="fruit-big f2">🍎</span>
+            <span class="fruit-big f3">🍌</span>
+            <span class="fruit-big f4">🍇</span>
+            <span class="fruit-big f5">🍓</span>
+            <span class="fruit-big f6">🥭</span>
+          </div>
+          <div class="brand-text-big">جربني</div>
+          <div class="truck-icon">🚛</div>
+        </div>
+      </div>
+    </div>
+    <div class="wave-divider">
+      <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+        <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#fff"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ===== MARQUEE ===== -->
+  <div class="marquee-strip">
+    <div class="marquee-inner">
+      <span>🍊 برتقال</span><span>🍎 تفاح</span><span>🍌 موز</span>
+      <span>🍇 عنب</span><span>🍓 فراولة</span><span>🥭 مانجو</span>
+      <span>🥕 جزر</span><span>🥦 بروكلي</span><span>🍅 طماطم</span>
+      <span>🥑 أفوكادو</span><span>🍋 ليمون</span><span>🫐 توت</span>
+      <span>🍊 برتقال</span><span>🍎 تفاح</span><span>🍌 موز</span>
+      <span>🍇 عنب</span><span>🍓 فراولة</span><span>🥭 مانجو</span>
+    </div>
+  </div>
+
+  <!-- ===== PRODUCTS ===== -->
+  <section class="products" id="products">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">منتجاتنا</span>
+        <h2>أطيب المنتجات الطازجة</h2>
+        <p>نختار لك الأجود والأطيب من الفواكه والخضروات الموسمية</p>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-tab="fruits">🍊 الفواكه</button>
+        <button class="tab" data-tab="veggies">🥦 الخضروات</button>
+      </div>
+      <div class="products-grid" id="fruitsGrid"></div>
+      <div class="products-grid hidden" id="veggiesGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===== WHY US ===== -->
+  <section class="why-us" id="why-us">
+    <div class="container">
+      <div class="section-header light">
+        <span class="section-tag">لماذا جربني؟</span>
+        <h2>نختلف لأننا نهتم</h2>
+        <p>نقدم لك تجربة تسوق فريدة ومريحة</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon">🌿</div><h3>طازج 100%</h3><p>نختار منتجاتنا يومياً من أفضل المزارع المحلية لضمان الطزاجة الكاملة</p></div>
+        <div class="feature-card"><div class="feature-icon">🚚</div><h3>توصيل سريع</h3><p>نوصل طلبك إلى باب منزلك في أقل من 24 ساعة في جميع المناطق</p></div>
+        <div class="feature-card"><div class="feature-icon">💰</div><h3>أسعار منافسة</h3><p>أفضل جودة بأسعار معقولة، نضمن لك قيمة حقيقية مقابل كل دينار</p></div>
+        <div class="feature-card"><div class="feature-icon">⭐</div><h3>جودة مضمونة</h3><p>كل منتج يمر بمعايير صارمة للجودة قبل وصوله إليك</p></div>
+        <div class="feature-card"><div class="feature-icon">📱</div><h3>طلب سهل</h3><p>اطلب عبر الهاتف أو واتساب، بدون تعقيد ولا انتظار طويل</p></div>
+        <div class="feature-card"><div class="feature-icon">♻️</div><h3>تغليف صديق للبيئة</h3><p>نستخدم مواد تغليف طبيعية للحفاظ على طازجية المنتجات</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">آراء عملائنا</span>
+        <h2>ماذا يقولون عنا</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <p>"منتجات رائعة وطازجة جداً! التوصيل كان سريعاً والأسعار معقولة. أنصح الجميع بتجربة جربني"</p>
+          <div class="client"><div class="client-avatar">أ.س</div><div><strong>أحمد سعيد</strong><span>عميل منذ 2025</span></div></div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <p>"أخيراً وجدت من يوفر فواكه وخضروات طازجة بجودة عالية! الفراولة كانت لذيذة جداً 🍓"</p>
+          <div class="client"><div class="client-avatar">ف.م</div><div><strong>فاطمة محمد</strong><span>عميلة منذ 2025</span></div></div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <p>"خدمة ممتازة وأسعار لا تُقاوم. الطلب وصل في الوقت المحدد والمنتجات كانت طازجة جداً"</p>
+          <div class="client"><div class="client-avatar">ك.ب</div><div><strong>كريم بن علي</strong><span>عميل منذ 2025</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ORDER ===== -->
+  <section class="order-section" id="order">
+    <div class="container">
+      <div class="order-wrapper">
+        <div class="order-info">
+          <span class="section-tag">اطلب الآن</span>
+          <h2>ابدأ طلبك اليوم</h2>
+          <p>أضف المنتجات إلى سلتك ثم أكمل بياناتك، أو تواصل معنا مباشرة</p>
+          <ul class="order-steps">
+            <li><span class="step-num">1</span> اختر منتجاتك وأضفها للسلة</li>
+            <li><span class="step-num">2</span> أدخل بياناتك</li>
+            <li><span class="step-num">3</span> نتواصل معك للتأكيد</li>
+            <li><span class="step-num">4</span> نوصل إلى بابك 🚛</li>
+          </ul>
+        </div>
+        <form class="order-form" id="orderForm">
+          <div class="form-group">
+            <label>الاسم الكامل</label>
+            <input type="text" id="clientName" placeholder="أدخل اسمك الكامل" required />
+          </div>
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="clientPhone" placeholder="+216 XX XXX XXX" required />
+          </div>
+          <div class="form-group">
+            <label>العنوان / الولاية</label>
+            <input type="text" id="clientAddress" placeholder="بنزرت الشمالية - أدخل عنوانك بالتفصيل" required />
+          </div>
+          <div class="form-group">
+            <label>المنتجات المطلوبة</label>
+            <textarea id="orderProducts" rows="4" placeholder="مثال: 2 كغ برتقال، 1 كغ تفاح..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>ملاحظات إضافية</label>
+            <textarea id="orderNotes" rows="2" placeholder="أي طلبات خاصة..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary full-width">🚛 أرسل طلبي</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">تواصل معنا</span>
+        <h2>نحن هنا لمساعدتك</h2>
+      </div>
+      <div class="contact-grid">
+        <a class="contact-card whatsapp wa-link" href="#" target="_blank">
+          <div class="contact-icon">💬</div>
+          <h3>واتساب</h3>
+          <p>تواصل معنا مباشرة عبر واتساب للطلب السريع</p>
+          <span class="contact-link">اضغط هنا →</span>
+        </a>
+        <div class="contact-card">
+          <div class="contact-icon">📞</div>
+          <h3>اتصل بنا</h3>
+          <p>متاحون من السبت إلى الخميس<br />من 8 صباحاً إلى 8 مساءً</p>
+          <span class="contact-link phone-display">+216 XX XXX XXX</span>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">📍</div>
+          <h3>منطقة التوصيل</h3>
+          <p>نوصل في بنزرت الشمالية<br />وضواحيها بدون رسوم إضافية</p>
+          <span class="contact-link">بنزرت الشمالية 🇹🇳</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo"><span>🍊🍎🍌</span><strong>جربني</strong></div>
+        <p>فواكه وخضروات طازجة من بنزرت الشمالية 🇹🇳</p>
+        <p class="footer-year">© 2025 جربني - بنزرت، تونس</p>
+        <a href="index.html" class="admin-link">⚙️ لوحة التحكم</a>
+        <div class="social-links">
+          <a href="#" class="social-btn" title="Facebook">📘</a>
+          <a href="#" class="social-btn wa-link" title="WhatsApp">💬</a>
+          <a href="#" class="social-btn" title="Instagram">📸</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>روابط سريعة</h4>
+        <a href="#home">الرئيسية</a>
+        <a href="#products">منتجاتنا</a>
+        <a href="#why-us">لماذا جربني</a>
+        <a href="#order">اطلب الآن</a>
+        <a href="#contact">تواصل معنا</a>
+      </div>
+      <div class="footer-fruits">
+        <h4>منتجاتنا</h4>
+        <p>🍊 فواكه موسمية</p>
+        <p>🥦 خضروات طازجة</p>
+        <p>🚚 توصيل في بنزرت</p>
+        <p>⭐ جودة مضمونة 🇹🇳</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== CART OVERLAY & PANEL ===== -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-panel-header">
+      <h3>🛒 سلة الطلب</h3>
+      <button class="cart-close-btn" id="cartClose">×</button>
+    </div>
+    <div class="cart-empty" id="cartEmpty">
+      <p style="font-size:3rem">🛒</p>
+      <p>السلة فارغة</p>
+      <p>أضف منتجات من القائمة</p>
+    </div>
+    <div class="cart-items-list" id="cartItemsList"></div>
+    <div class="cart-panel-footer" id="cartFooter">
+      <div class="cart-total-row">
+        <span>المجموع التقريبي:</span>
+        <strong id="cartTotalDisplay">0 دت</strong>
+      </div>
+      <button class="btn btn-primary full-width" id="cartOrderBtn">🚛 أكمل الطلب</button>
+      <button class="btn-clear-cart" id="clearCartBtn">مسح السلة</button>
+    </div>
+  </div>
+
+  <!-- ===== FLOATING BUTTONS ===== -->
+  <button class="cart-float-btn" id="cartFloatBtn" title="سلة الطلب" style="display:none">
+    🛒
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+  <a class="whatsapp-float wa-link" href="#" target="_blank" title="تواصل واتساب">💬</a>
+
+  <!-- ===== TOAST ===== -->
+  <div class="cart-toast" id="cartToast"></div>
+
+  <script src="products-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
