@@ -155,25 +155,37 @@
 
         <!-- Upload card -->
         <div class="gallery-upload-card">
-          <h3>➕ إضافة صورة جديدة</h3>
+          <h3>➕ إضافة صور جديدة</h3>
+
           <div class="gallery-upload-area" id="galleryUploadArea">
             <span>📷</span>
-            <p>انقر لاختيار صورة أو عدة صور دفعة واحدة</p>
+            <p>انقر هنا واختر صورة أو عدة صور</p>
+            <small style="color:#999;margin-top:4px;display:block">على الكمبيوتر: اضغط Ctrl وانقر على عدة صور في نفس الوقت</small>
             <input type="file" id="galleryFileInput" accept="image/*" multiple />
           </div>
-          <div class="form-group" style="margin-top:14px">
-            <label>تعليق (اختياري)</label>
+
+          <!-- Preview -->
+          <div class="gallery-preview-wrap hidden" id="galleryPreviewWrap">
+            <p class="gallery-preview-label">📎 الصور المختارة:</p>
+            <div class="gallery-preview-thumbs" id="galleryPreviewThumbs"></div>
+          </div>
+
+          <div class="form-group" style="margin-top:16px">
+            <label>تعليق للصور (اختياري)</label>
             <input type="text" id="galleryCaptionInput" placeholder="مثال: توصيل اليوم في بنزرت 🚛" />
           </div>
-          <button class="btn-save-settings" id="addGalleryPhotoBtn" style="margin-top:12px">💾 إضافة الصور</button>
-          <div class="gallery-preview-wrap hidden" id="galleryPreviewWrap"></div>
+          <button class="btn-save-settings" id="addGalleryPhotoBtn" style="margin-top:14px;width:100%">💾 إضافة الصور</button>
         </div>
 
-        <!-- Photos grid -->
+        <!-- Saved photos grid -->
+        <div class="gallery-grid-label" id="galleryGridLabel" style="display:none">
+          <h3>🖼️ الصور المنشورة على الموقع</h3>
+        </div>
         <div id="adminGalleryGrid" class="admin-gallery-grid"></div>
         <div class="orders-empty" id="galleryAdminEmpty" style="display:none">
           <p style="font-size:3rem">📸</p>
-          <p>لا توجد صور بعد — أضف صورك أعلاه</p>
+          <p>لا توجد صور بعد</p>
+          <p style="opacity:.6;font-size:.9rem">أضف صورك أعلاه لتظهر للزبائن</p>
         </div>
       </div>
 
