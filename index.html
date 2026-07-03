@@ -7,9 +7,30 @@
   <meta name="description" content="جربني - فواكه وخضروات طازجة بتوصيل سريع في بنزرت الشمالية" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍊</text></svg>" />
   <link rel="stylesheet" href="login.css" />
+  <style>
+    .settings-fab {
+      position: fixed; top: 16px; left: 16px; z-index: 100;
+      background: rgba(255,255,255,.85);
+      border: 1.5px solid rgba(255,255,255,.6);
+      border-radius: 50px;
+      padding: .45rem .9rem;
+      font-size: .9rem;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      font-family: 'Cairo', sans-serif;
+      color: #1A2A10;
+      transition: background .2s, transform .15s;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .settings-fab:hover { background: #fff; transform: scale(1.05); }
+  </style>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
 </head>
 <body>
+
+  <!-- Settings button -->
+  <a href="settings.html" class="settings-fab">⚙️ <span data-i18n="settings.title">الإعدادات</span></a>
 
   <!-- Background shapes -->
   <div class="bg-shapes">
@@ -19,7 +40,7 @@
     <div class="bg-shape s4"></div>
   </div>
 
-  <!-- Floating fruits decoration -->
+  <!-- Floating fruits -->
   <div class="floating-fruits" aria-hidden="true">
     <span class="ff ff1">🍊</span>
     <span class="ff ff2">🍎</span>
@@ -38,12 +59,12 @@
         <span class="brand-name">جربني</span>
         <span class="brand-truck">🚛</span>
       </div>
-      <p class="brand-sub">فواكه وخضروات طازجة • توصيل سريع</p>
+      <p class="brand-sub" data-i18n="brand.sub">فواكه وخضروات طازجة • توصيل سريع</p>
     </div>
 
-    <!-- ===== ROLE SELECTION ===== -->
+    <!-- ROLE SELECTION -->
     <section class="role-section" id="roleSection">
-      <p class="choose-label">اختر دورك للمتابعة</p>
+      <p class="choose-label" data-i18n="role.choose">اختر دورك للمتابعة</p>
       <div class="role-cards">
 
         <!-- CLIENT -->
@@ -52,15 +73,15 @@
           <div class="role-icon-wrap client-wrap">
             <span class="role-icon">🛒</span>
           </div>
-          <h2>زبون</h2>
-          <p>تصفح المنتجات الطازجة<br/>وقدّم طلبك بسهولة</p>
+          <h2 data-i18n="role.client.title">زبون</h2>
+          <p data-i18n="role.client.desc">تصفح المنتجات الطازجة<br/>وقدّم طلبك بسهولة</p>
           <div class="role-tags">
-            <span>🍊 فواكه</span>
-            <span>🥦 خضروات</span>
-            <span>🚚 توصيل</span>
+            <span data-i18n="role.client.tag1">🍊 فواكه</span>
+            <span data-i18n="role.client.tag2">🥦 خضروات</span>
+            <span data-i18n="role.client.tag3">🚚 توصيل</span>
           </div>
           <div class="role-btn client-btn">
-            <span>دخول</span>
+            <span data-i18n="role.enter">دخول</span>
             <span class="btn-arrow">←</span>
           </div>
         </a>
@@ -71,15 +92,15 @@
           <div class="role-icon-wrap admin-wrap">
             <span class="role-icon">⚙️</span>
           </div>
-          <h2>مدير</h2>
-          <p>إدارة المنتجات والأسعار<br/>ولوحة التحكم الكاملة</p>
+          <h2 data-i18n="role.admin.title">مدير</h2>
+          <p data-i18n="role.admin.desc">إدارة المنتجات والأسعار<br/>ولوحة التحكم الكاملة</p>
           <div class="role-tags">
-            <span>📷 صور</span>
-            <span>💰 أسعار</span>
-            <span>📊 إدارة</span>
+            <span data-i18n="role.admin.tag1">📷 صور</span>
+            <span data-i18n="role.admin.tag2">💰 أسعار</span>
+            <span data-i18n="role.admin.tag3">📊 إدارة</span>
           </div>
           <div class="role-btn admin-btn">
-            <span>دخول</span>
+            <span data-i18n="role.enter">دخول</span>
             <span class="btn-arrow">←</span>
           </div>
         </div>
@@ -87,40 +108,33 @@
       </div>
     </section>
 
-    <!-- ===== ADMIN AUTH ===== -->
+    <!-- ADMIN AUTH -->
     <section class="auth-section hidden" id="authSection">
-      <button class="back-btn" id="backBtn">
-        <span>→</span> رجوع
-      </button>
+      <button class="back-btn" id="backBtn" data-i18n="back">→ رجوع</button>
       <div class="auth-card">
-        <div class="auth-icon-wrap">
-          <span>🔑</span>
-        </div>
-        <h2>دخول المدير</h2>
-        <p>أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
+        <div class="auth-icon-wrap"><span>🔑</span></div>
+        <h2 data-i18n="auth.title">دخول المدير</h2>
+        <p data-i18n="auth.desc">أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
         <form class="auth-form" id="authForm">
           <div class="pwd-input-wrap">
-            <input
-              type="password"
-              id="adminPwd"
-              placeholder="كلمة المرور"
-              autocomplete="current-password"
-            />
+            <input type="password" id="adminPwd" data-i18n-ph="auth.ph"
+              placeholder="كلمة المرور" autocomplete="current-password" />
             <button type="button" class="pwd-toggle" id="pwdToggle" title="إظهار/إخفاء">👁</button>
           </div>
-          <p class="auth-error hidden" id="authError">❌ كلمة المرور غير صحيحة</p>
+          <p class="auth-error hidden" id="authError" data-i18n="auth.error">❌ كلمة المرور غير صحيحة</p>
           <button type="submit" class="submit-btn" id="submitBtn">
-            <span id="submitText">دخول</span>
+            <span id="submitText" data-i18n="auth.submit">دخول</span>
             <span class="submit-arrow">←</span>
           </button>
         </form>
-        <p class="pwd-hint">كلمة المرور الافتراضية: <code>jarrebni2025</code></p>
+        <p class="pwd-hint" data-i18n-html="auth.hint">كلمة المرور الافتراضية: <code>jarrebni2025</code></p>
       </div>
     </section>
 
   </main>
 
   <script src="products-data.js"></script>
+  <script src="i18n.js"></script>
   <script src="login.js"></script>
 </body>
 </html>

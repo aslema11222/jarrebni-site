@@ -4,11 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>جربني - فواكه وخضروات طازجة</title>
-  <meta name="description" content="جربني - أطيب الفواكه والخضروات الطازجة. توصيل سريع إلى باب منزلك في بنزرت الشمالية. جودة مضمونة وأسعار منافسة." />
-  <meta name="keywords" content="فواكه, خضروات, طازجة, توصيل, جربني, تونس, بنزرت" />
-  <meta property="og:title" content="جربني - فواكه وخضروات طازجة" />
-  <meta property="og:description" content="أطيب الفواكه والخضروات الطازجة بتوصيل سريع إلى منزلك" />
-  <meta property="og:type" content="website" />
+  <meta name="description" content="جربني - أطيب الفواكه والخضروات الطازجة. توصيل سريع في بنزرت الشمالية. جودة مضمونة وأسعار منافسة." />
   <meta name="theme-color" content="#E8820C" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍊</text></svg>" />
   <link rel="stylesheet" href="style.css" />
@@ -36,11 +32,12 @@
         </div>
       </a>
       <nav class="nav">
-        <a href="#home">الرئيسية</a>
-        <a href="#products">منتجاتنا</a>
-        <a href="#why-us">لماذا جربني</a>
-        <a href="#order">اطلب الآن</a>
-        <a href="#contact">تواصل معنا</a>
+        <a href="#home"     data-i18n="nav.home">الرئيسية</a>
+        <a href="#products" data-i18n="nav.products">منتجاتنا</a>
+        <a href="#why-us"   data-i18n="nav.whyus">لماذا جربني</a>
+        <a href="#order"    data-i18n="nav.order">اطلب الآن</a>
+        <a href="#contact"  data-i18n="nav.contact">تواصل معنا</a>
+        <a href="settings.html" title="Settings / Paramètres / الإعدادات" style="font-size:1.2rem;">⚙️</a>
       </nav>
       <button class="nav-toggle" id="navToggle" aria-label="toggle menu">
         <span></span><span></span><span></span>
@@ -57,15 +54,15 @@
     </div>
     <div class="container hero-content">
       <div class="hero-text">
-        <p class="hero-tag">🚚 توصيل سريع إلى باب منزلك</p>
+        <p class="hero-tag" data-i18n="hero.tag">🚚 توصيل سريع إلى باب منزلك</p>
         <h1>أطيب الفواكه<br /><span>والخضروات</span><br />الطازجة</h1>
         <p class="hero-desc">
           نجلب لك أفضل المنتجات الطازجة مباشرة من المزارع إلى منزلك.
           جودة عالية، أسعار منافسة، وتوصيل سريع.
         </p>
         <div class="hero-actions">
-          <a href="#order" class="btn btn-primary">اطلب الآن</a>
-          <a href="#products" class="btn btn-outline">تصفح المنتجات</a>
+          <a href="#order"    class="btn btn-primary" data-i18n="hero.btn.order">اطلب الآن</a>
+          <a href="#products" class="btn btn-outline"  data-i18n="hero.btn.browse">تصفح المنتجات</a>
         </div>
         <div class="hero-stats">
           <div class="stat"><strong>+500</strong><span>عميل راضٍ</span></div>
@@ -113,13 +110,13 @@
   <section class="products" id="products">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">منتجاتنا</span>
-        <h2>أطيب المنتجات الطازجة</h2>
-        <p>نختار لك الأجود والأطيب من الفواكه والخضروات الموسمية</p>
+        <span class="section-tag" data-i18n="products.tag">منتجاتنا</span>
+        <h2 data-i18n="products.title">أطيب المنتجات الطازجة</h2>
+        <p data-i18n="products.desc">نختار لك الأجود والأطيب من الفواكه والخضروات الموسمية</p>
       </div>
       <div class="tabs">
-        <button class="tab active" data-tab="fruits">🍊 الفواكه</button>
-        <button class="tab" data-tab="veggies">🥦 الخضروات</button>
+        <button class="tab active" data-tab="fruits" data-i18n="tab.fruits">🍊 الفواكه</button>
+        <button class="tab" data-tab="veggies"       data-i18n="tab.veggies">🥦 الخضروات</button>
       </div>
       <div class="products-grid" id="fruitsGrid"></div>
       <div class="products-grid hidden" id="veggiesGrid"></div>
@@ -177,9 +174,9 @@
     <div class="container">
       <div class="order-wrapper">
         <div class="order-info">
-          <span class="section-tag">اطلب الآن</span>
-          <h2>ابدأ طلبك اليوم</h2>
-          <p>أضف المنتجات إلى سلتك ثم أكمل بياناتك، أو تواصل معنا مباشرة</p>
+          <span class="section-tag" data-i18n="order.tag">اطلب الآن</span>
+          <h2 data-i18n="order.title">ابدأ طلبك اليوم</h2>
+          <p data-i18n="order.desc">أضف المنتجات إلى سلتك ثم أكمل بياناتك، أو تواصل معنا مباشرة</p>
           <ul class="order-steps">
             <li><span class="step-num">1</span> اختر منتجاتك وأضفها للسلة</li>
             <li><span class="step-num">2</span> أدخل بياناتك</li>
@@ -189,26 +186,26 @@
         </div>
         <form class="order-form" id="orderForm">
           <div class="form-group">
-            <label>الاسم الكامل</label>
-            <input type="text" id="clientName" placeholder="أدخل اسمك الكامل" required />
+            <label data-i18n="form.name">الاسم الكامل</label>
+            <input type="text" id="clientName" data-i18n-ph="form.name.ph" placeholder="أدخل اسمك الكامل" required />
           </div>
           <div class="form-group">
-            <label>رقم الهاتف</label>
-            <input type="tel" id="clientPhone" placeholder="+216 XX XXX XXX" required />
+            <label data-i18n="form.phone">رقم الهاتف</label>
+            <input type="tel" id="clientPhone" data-i18n-ph="form.phone.ph" placeholder="+216 XX XXX XXX" required />
           </div>
           <div class="form-group">
-            <label>العنوان / الولاية</label>
-            <input type="text" id="clientAddress" placeholder="بنزرت الشمالية - أدخل عنوانك بالتفصيل" required />
+            <label data-i18n="form.address">العنوان / الولاية</label>
+            <input type="text" id="clientAddress" data-i18n-ph="form.address.ph" placeholder="بنزرت الشمالية - أدخل عنوانك بالتفصيل" required />
           </div>
           <div class="form-group">
-            <label>المنتجات المطلوبة</label>
-            <textarea id="orderProducts" rows="4" placeholder="مثال: 2 كغ برتقال، 1 كغ تفاح..."></textarea>
+            <label data-i18n="form.products">المنتجات المطلوبة</label>
+            <textarea id="orderProducts" rows="4" data-i18n-ph="form.products.ph" placeholder="مثال: 2 كغ برتقال، 1 كغ تفاح..."></textarea>
           </div>
           <div class="form-group">
-            <label>ملاحظات إضافية</label>
-            <textarea id="orderNotes" rows="2" placeholder="أي طلبات خاصة..."></textarea>
+            <label data-i18n="form.notes">ملاحظات إضافية</label>
+            <textarea id="orderNotes" rows="2" data-i18n-ph="form.notes.ph" placeholder="أي طلبات خاصة..."></textarea>
           </div>
-          <button type="submit" class="btn btn-primary full-width">🚛 أرسل طلبي</button>
+          <button type="submit" class="btn btn-primary full-width" data-i18n="form.submit">🚛 أرسل طلبي</button>
         </form>
       </div>
     </div>
@@ -218,8 +215,8 @@
   <section class="contact" id="contact">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">تواصل معنا</span>
-        <h2>نحن هنا لمساعدتك</h2>
+        <span class="section-tag" data-i18n="contact.tag">تواصل معنا</span>
+        <h2 data-i18n="contact.title">نحن هنا لمساعدتك</h2>
       </div>
       <div class="contact-grid">
         <a class="contact-card whatsapp wa-link" href="#" target="_blank">
@@ -260,11 +257,11 @@
       </div>
       <div class="footer-links">
         <h4>روابط سريعة</h4>
-        <a href="#home">الرئيسية</a>
-        <a href="#products">منتجاتنا</a>
-        <a href="#why-us">لماذا جربني</a>
-        <a href="#order">اطلب الآن</a>
-        <a href="#contact">تواصل معنا</a>
+        <a href="#home" data-i18n="nav.home">الرئيسية</a>
+        <a href="#products" data-i18n="nav.products">منتجاتنا</a>
+        <a href="#why-us" data-i18n="nav.whyus">لماذا جربني</a>
+        <a href="#order" data-i18n="nav.order">اطلب الآن</a>
+        <a href="#contact" data-i18n="nav.contact">تواصل معنا</a>
       </div>
       <div class="footer-fruits">
         <h4>منتجاتنا</h4>
@@ -276,40 +273,39 @@
     </div>
   </footer>
 
-  <!-- ===== CART OVERLAY & PANEL ===== -->
+  <!-- ===== CART ===== -->
   <div class="cart-overlay" id="cartOverlay"></div>
   <div class="cart-panel" id="cartPanel">
     <div class="cart-panel-header">
-      <h3>🛒 سلة الطلب</h3>
+      <h3 data-i18n="cart.title">🛒 سلة الطلب</h3>
       <button class="cart-close-btn" id="cartClose">×</button>
     </div>
     <div class="cart-empty" id="cartEmpty">
       <p style="font-size:3rem">🛒</p>
-      <p>السلة فارغة</p>
-      <p>أضف منتجات من القائمة</p>
+      <p data-i18n="cart.empty">السلة فارغة</p>
+      <p data-i18n="cart.empty.hint">أضف منتجات من القائمة</p>
     </div>
     <div class="cart-items-list" id="cartItemsList"></div>
     <div class="cart-panel-footer" id="cartFooter">
       <div class="cart-total-row">
-        <span>المجموع التقريبي:</span>
+        <span data-i18n="cart.total">المجموع التقريبي:</span>
         <strong id="cartTotalDisplay">0 دت</strong>
       </div>
-      <button class="btn btn-primary full-width" id="cartOrderBtn">🚛 أكمل الطلب</button>
-      <button class="btn-clear-cart" id="clearCartBtn">مسح السلة</button>
+      <button class="btn btn-primary full-width" id="cartOrderBtn" data-i18n="cart.order">🚛 أكمل الطلب</button>
+      <button class="btn-clear-cart" id="clearCartBtn" data-i18n="cart.clear">مسح السلة</button>
     </div>
   </div>
 
   <!-- ===== FLOATING BUTTONS ===== -->
   <button class="cart-float-btn" id="cartFloatBtn" title="سلة الطلب" style="display:none">
-    🛒
-    <span class="cart-count" id="cartCount">0</span>
+    🛒 <span class="cart-count" id="cartCount">0</span>
   </button>
   <a class="whatsapp-float wa-link" href="#" target="_blank" title="تواصل واتساب">💬</a>
 
-  <!-- ===== TOAST ===== -->
   <div class="cart-toast" id="cartToast"></div>
 
   <script src="products-data.js"></script>
+  <script src="i18n.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

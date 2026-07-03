@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الإعدادات - جربني</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>" />
+  <link rel="stylesheet" href="settings.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="settings-bg">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="bg-blob b3"></div>
+  </div>
+
+  <div class="settings-page">
+
+    <!-- Header -->
+    <div class="settings-header">
+      <button class="back-btn" id="backBtn" data-i18n="back">→ رجوع</button>
+      <h1 data-i18n="settings.title">الإعدادات</h1>
+    </div>
+
+    <!-- Brand mini -->
+    <div class="brand-mini">
+      <div class="brand-mini-circle">🍊</div>
+      <div class="brand-mini-info">
+        <strong>جربني</strong>
+        <span data-i18n="brand.sub">فواكه وخضروات طازجة • توصيل سريع</span>
+      </div>
+    </div>
+
+    <!-- Language card -->
+    <div class="settings-card">
+      <h2 data-i18n="settings.lang.title">اللغة / Langue / Language</h2>
+      <p data-i18n="settings.lang.desc">اختر لغة عرض الموقع</p>
+
+      <div class="current-lang-row" id="currentLangRow">
+        <span>✓</span>
+        <span id="currentLangName">العربية 🇹🇳</span>
+      </div>
+
+      <div class="lang-options">
+        <div class="lang-card" data-lang="ar">
+          <span class="lang-flag">🇹🇳</span>
+          <span class="lang-name">العربية</span>
+          <span class="lang-native">Arabic</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-card" data-lang="fr">
+          <span class="lang-flag">🇫🇷</span>
+          <span class="lang-name">Français</span>
+          <span class="lang-native">French</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-card" data-lang="en">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-name">English</span>
+          <span class="lang-native">English</span>
+          <span class="lang-check">✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save button -->
+    <button class="save-btn" id="saveBtn" data-i18n="settings.save">💾 حفظ</button>
+
+  </div>
+
+  <script src="products-data.js"></script>
+  <script src="i18n.js"></script>
+  <script>
+    let selectedLang = getLang();
+
+    // Mark active card
+    function updateCards() {
+      document.querySelectorAll('.lang-card').forEach(c => {
+        c.classList.toggle('active', c.dataset.lang === selectedLang);
+      });
+      const L = TRANSLATIONS[selectedLang] || TRANSLATIONS.ar;
+      document.getElementById('currentLangName').textContent = L.name + ' ' + L.flag;
+    }
+
+    document.querySelectorAll('.lang-card').forEach(card => {
+      card.addEventListener('click', () => {
+        selectedLang = card.dataset.lang;
+        updateCards();
+        applyLang(selectedLang);
+      });
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      setLang(selectedLang);
+      const btn = document.getElementById('saveBtn');
+      const L = TRANSLATIONS[selectedLang] || TRANSLATIONS.ar;
+      btn.textContent = L.t['settings.saved'] || '✓ Saved!';
+      btn.classList.add('saved');
+      setTimeout(() => {
+        history.back();
+      }, 900);
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => history.back());
+
+    updateCards();
+  </script>
+</body>
+</html>
