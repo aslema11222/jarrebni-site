@@ -3,15 +3,15 @@ const LANG_KEY = 'jarrebni_lang';
 
 const TRANSLATIONS = {
   ar: {
-    code:'ar', dir:'rtl', name:'العربية', flag:'🇹🇳',
+    code:'ar', name:'العربية', flag:'🇹🇳',
     t:{
       'brand.sub':'فواكه وخضروات طازجة • توصيل سريع',
       'role.choose':'اختر دورك للمتابعة',
       'role.client.title':'زبون',
-      'role.client.desc':'تصفح المنتجات الطازجة\nوقدّم طلبك بسهولة',
+      'role.client.desc':'تصفح المنتجات الطازجة وقدّم طلبك بسهولة',
       'role.client.tag1':'🍊 فواكه','role.client.tag2':'🥦 خضروات','role.client.tag3':'🚚 توصيل',
       'role.admin.title':'مدير',
-      'role.admin.desc':'إدارة المنتجات والأسعار\nولوحة التحكم الكاملة',
+      'role.admin.desc':'إدارة المنتجات والأسعار ولوحة التحكم الكاملة',
       'role.admin.tag1':'📷 صور','role.admin.tag2':'💰 أسعار','role.admin.tag3':'📊 إدارة',
       'role.enter':'دخول',
       'auth.title':'دخول المدير',
@@ -28,6 +28,7 @@ const TRANSLATIONS = {
       'products.tag':'منتجاتنا','products.title':'أطيب المنتجات الطازجة',
       'products.desc':'نختار لك الأجود والأطيب من الفواكه والخضروات الموسمية',
       'tab.fruits':'🍊 الفواكه','tab.veggies':'🥦 الخضروات',
+      'btn.add':'+ أضف',
       'order.tag':'اطلب الآن','order.title':'ابدأ طلبك اليوم',
       'order.desc':'أضف المنتجات إلى سلتك ثم أكمل بياناتك، أو تواصل معنا مباشرة',
       'form.name':'الاسم الكامل','form.name.ph':'أدخل اسمك الكامل',
@@ -48,15 +49,15 @@ const TRANSLATIONS = {
     }
   },
   fr: {
-    code:'fr', dir:'ltr', name:'Français', flag:'🇫🇷',
+    code:'fr', name:'Français', flag:'🇫🇷',
     t:{
       'brand.sub':'Fruits et légumes frais • Livraison rapide',
       'role.choose':'Choisissez votre rôle',
       'role.client.title':'Client',
-      'role.client.desc':'Parcourez les produits frais\net passez commande facilement',
+      'role.client.desc':'Parcourez les produits frais et passez commande facilement',
       'role.client.tag1':'🍊 Fruits','role.client.tag2':'🥦 Légumes','role.client.tag3':'🚚 Livraison',
       'role.admin.title':'Admin',
-      'role.admin.desc':'Gérez les produits et les prix\net accédez au tableau de bord',
+      'role.admin.desc':'Gérez les produits et les prix et accédez au tableau de bord',
       'role.admin.tag1':'📷 Photos','role.admin.tag2':'💰 Prix','role.admin.tag3':'📊 Gestion',
       'role.enter':'Entrer',
       'auth.title':'Connexion Administrateur',
@@ -73,6 +74,7 @@ const TRANSLATIONS = {
       'products.tag':'Nos produits','products.title':'Nos meilleurs produits frais',
       'products.desc':'Nous sélectionnons les meilleurs fruits et légumes de saison pour vous',
       'tab.fruits':'🍊 Fruits','tab.veggies':'🥦 Légumes',
+      'btn.add':'+ Ajouter',
       'order.tag':'Commander','order.title':'Commandez aujourd\'hui',
       'order.desc':'Ajoutez des produits à votre panier puis complétez vos informations',
       'form.name':'Nom complet','form.name.ph':'Entrez votre nom complet',
@@ -93,15 +95,15 @@ const TRANSLATIONS = {
     }
   },
   en: {
-    code:'en', dir:'ltr', name:'English', flag:'🇬🇧',
+    code:'en', name:'English', flag:'🇬🇧',
     t:{
       'brand.sub':'Fresh fruits & vegetables • Fast delivery',
       'role.choose':'Choose your role',
       'role.client.title':'Customer',
-      'role.client.desc':'Browse fresh products\nand place your order easily',
+      'role.client.desc':'Browse fresh products and place your order easily',
       'role.client.tag1':'🍊 Fruits','role.client.tag2':'🥦 Vegetables','role.client.tag3':'🚚 Delivery',
       'role.admin.title':'Admin',
-      'role.admin.desc':'Manage products and prices\nand access the full dashboard',
+      'role.admin.desc':'Manage products and prices and access the full dashboard',
       'role.admin.tag1':'📷 Photos','role.admin.tag2':'💰 Prices','role.admin.tag3':'📊 Management',
       'role.enter':'Enter',
       'auth.title':'Admin Login',
@@ -118,6 +120,7 @@ const TRANSLATIONS = {
       'products.tag':'Our products','products.title':'Our best fresh products',
       'products.desc':'We select the best seasonal fruits and vegetables for you',
       'tab.fruits':'🍊 Fruits','tab.veggies':'🥦 Vegetables',
+      'btn.add':'+ Add',
       'order.tag':'Order now','order.title':'Start your order today',
       'order.desc':'Add products to your cart then complete your information',
       'form.name':'Full name','form.name.ph':'Enter your full name',
@@ -139,26 +142,31 @@ const TRANSLATIONS = {
   }
 };
 
-function getLang()       { return localStorage.getItem(LANG_KEY) || 'ar'; }
-function setLang(code)   { localStorage.setItem(LANG_KEY, code); applyLang(code); }
+function getLang()     { return localStorage.getItem(LANG_KEY) || 'ar'; }
+function setLang(code) { localStorage.setItem(LANG_KEY, code); }
 
 function applyLang(code) {
   const L = TRANSLATIONS[code] || TRANSLATIONS.ar;
-  document.documentElement.dir  = L.dir;
-  document.documentElement.lang = L.code;
 
+  // Text elements
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     if (L.t[key] !== undefined) el.textContent = L.t[key];
   });
+
+  // innerHTML (for <code> tags etc.)
   document.querySelectorAll('[data-i18n-html]').forEach(el => {
     const key = el.dataset.i18nHtml;
     if (L.t[key] !== undefined) el.innerHTML = L.t[key];
   });
+
+  // Placeholders
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
     const key = el.dataset.i18nPh;
     if (L.t[key] !== undefined) el.placeholder = L.t[key];
   });
 }
 
+// Run on normal load AND when restored from browser back/forward cache
 document.addEventListener('DOMContentLoaded', () => applyLang(getLang()));
+window.addEventListener('pageshow', () => applyLang(getLang()));

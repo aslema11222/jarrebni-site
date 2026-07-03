@@ -73,9 +73,18 @@
   <script src="products-data.js"></script>
   <script src="i18n.js"></script>
   <script>
+    // Remember where user came from (index or shop)
+    const FROM_PAGE = (function() {
+      try {
+        const ref = document.referrer;
+        if (!ref) return 'index.html';
+        const name = new URL(ref).pathname.split('/').pop();
+        return name || 'index.html';
+      } catch(e) { return 'index.html'; }
+    })();
+
     let selectedLang = getLang();
 
-    // Mark active card
     function updateCards() {
       document.querySelectorAll('.lang-card').forEach(c => {
         c.classList.toggle('active', c.dataset.lang === selectedLang);
@@ -98,12 +107,15 @@
       const L = TRANSLATIONS[selectedLang] || TRANSLATIONS.ar;
       btn.textContent = L.t['settings.saved'] || '✓ Saved!';
       btn.classList.add('saved');
+      // Force a fresh page load (not from cache) so translations apply
       setTimeout(() => {
-        history.back();
-      }, 900);
+        window.location.href = FROM_PAGE;
+      }, 700);
     });
 
-    document.getElementById('backBtn').addEventListener('click', () => history.back());
+    document.getElementById('backBtn').addEventListener('click', () => {
+      window.location.href = FROM_PAGE;
+    });
 
     updateCards();
   </script>

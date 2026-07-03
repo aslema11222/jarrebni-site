@@ -73,21 +73,23 @@ function renderGrid(gridId, items) {
     const thumb = p.image
       ? `<img src="${p.image}" class="product-img" alt="${p.name}">`
       : `<div class="product-emoji">${p.emoji}</div>`;
+    const addLabel  = (typeof getLang === 'function' && TRANSLATIONS?.[getLang()]?.t?.['btn.add']) || '+ أضف';
+    const doneLabel = getLang?.() === 'fr' ? '✓ Ajouté' : getLang?.() === 'en' ? '✓ Added' : '✓ تمت';
     card.innerHTML = `
       ${thumb}
       <h3>${p.name}</h3>
       <p>${p.desc}</p>
       <div class="product-footer">
         <span class="price">${p.price} دت/${p.unit}</span>
-        <button class="btn-add">+ أضف</button>
+        <button class="btn-add">${addLabel}</button>
       </div>
     `;
     card.querySelector('.btn-add').addEventListener('click', (e) => {
       addToCart(p);
       const btn = e.currentTarget;
       btn.classList.add('added');
-      btn.textContent = '✓ تمت';
-      setTimeout(() => { btn.classList.remove('added'); btn.textContent = '+ أضف'; }, 1800);
+      btn.textContent = doneLabel;
+      setTimeout(() => { btn.classList.remove('added'); btn.textContent = addLabel; }, 1800);
     });
     grid.appendChild(card);
   });
