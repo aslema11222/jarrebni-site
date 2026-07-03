@@ -1,7 +1,10 @@
 // ===== INIT =====
-document.addEventListener('DOMContentLoaded', () => {
-  if (JARREBNI.isLoggedIn()) showDashboard();
-  else showLogin();
+document.addEventListener('DOMContentLoaded', async () => {
+  if (await JARREBNI.isLoggedIn()) {
+    await showDashboard();
+  } else {
+    showLogin();
+  }
 });
 
 // ===== AUTH =====
@@ -11,37 +14,40 @@ function showLogin() {
   document.getElementById('accessDenied').classList.add('hidden');
 }
 
-function showDashboard() {
+async function showDashboard() {
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('accessDenied').classList.add('hidden');
   document.getElementById('dashboard').classList.remove('hidden');
-  renderAdminProducts();
-  loadSettingsForm();
+  await renderAdminProducts();
+  await loadSettingsForm();
   updateStats();
-  updateOrdersBadge();
-  updateReviewsBadge();
   startOrderNotificationPolling();
 }
 
-document.getElementById('loginForm').addEventListener('submit', (e) => {
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+  const btn   = e.target.querySelector('button[type="submit"]');
   const email = document.getElementById('emailInput').value.trim();
   const pwd   = document.getElementById('passwordInput').value;
-  if (JARREBNI.login(email, pwd)) {
-    showDashboard();
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري التحقق...';
+  const ok = await JARREBNI.login(email, pwd);
+  if (ok) {
+    await showDashboard();
   } else {
     document.getElementById('loginError').classList.remove('hidden');
     document.getElementById('passwordInput').value = '';
     document.getElementById('passwordInput').focus();
+    btn.disabled = false;
+    btn.textContent = 'دخول →';
   }
 });
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  if (confirm('هل تريد تسجيل الخروج؟')) {
-    JARREBNI.logout();
-    closeSidebar();
-    showLogin();
-  }
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  if (!confirm('هل تريد تسجيل الخروج؟')) return;
+  await JARREBNI.logout();
+  closeSidebar();
+  showLogin();
 });
 
 // ===== MOBILE SIDEBAR =====
@@ -58,16 +64,16 @@ sidebarOverlay.addEventListener('click', closeSidebar);
 const SECTIONS = ['products', 'orders', 'customers', 'reviews', 'settings'];
 
 document.querySelectorAll('.nav-item[data-section]').forEach(item => {
-  item.addEventListener('click', () => {
+  item.addEventListener('click', async () => {
     document.querySelectorAll('.nav-item[data-section]').forEach(n => n.classList.remove('active'));
     item.classList.add('active');
     const sec = item.dataset.section;
     SECTIONS.forEach(s => {
       document.getElementById(s + 'Section').classList.toggle('hidden', s !== sec);
     });
-    if (sec === 'orders')    renderOrders();
-    if (sec === 'customers') renderCustomers();
-    if (sec === 'reviews')   renderAdminReviews();
+    if (sec === 'orders')    await renderOrders();
+    if (sec === 'customers') await renderCustomers();
+    if (sec === 'reviews')   await renderAdminReviews();
     closeSidebar();
   });
 });
@@ -85,10 +91,11 @@ document.querySelectorAll('.admin-tab').forEach(tab => {
 });
 
 // ===== RENDER PRODUCTS =====
-function renderAdminProducts() {
-  const data = JARREBNI.getProducts();
-  fillGrid('adminFruitsGrid', data.fruits, 'fruits');
+async function renderAdminProducts() {
+  const data = await JARREBNI.getProducts();
+  fillGrid('adminFruitsGrid',  data.fruits,  'fruits');
   fillGrid('adminVeggiesGrid', data.veggies, 'veggies');
+  updateStats(data);
 }
 
 function fillGrid(gridId, items, category) {
@@ -113,16 +120,16 @@ function fillGrid(gridId, items, category) {
 
 // ===== ADD PRODUCT =====
 document.getElementById('addProductBtn').addEventListener('click', () => {
-  currentEditId = null;
+  currentEditId    = null;
   currentImageData = '';
   document.getElementById('modalTitle').textContent = 'إضافة منتج جديد';
-  document.getElementById('editCategory').value = currentAdminTab;
-  document.getElementById('editId').value = '';
-  document.getElementById('editEmoji').value = '🍊';
-  document.getElementById('editName').value = '';
-  document.getElementById('editDesc').value = '';
-  document.getElementById('editPrice').value = '';
-  document.getElementById('editUnit').value = 'كغ';
+  document.getElementById('editCategory').value     = currentAdminTab;
+  document.getElementById('editId').value           = '';
+  document.getElementById('editEmoji').value        = '🍊';
+  document.getElementById('editName').value         = '';
+  document.getElementById('editDesc').value         = '';
+  document.getElementById('editPrice').value        = '';
+  document.getElementById('editUnit').value         = 'كغ';
   setPreview('', '🍊');
   document.getElementById('deleteProductBtn').classList.add('hidden');
   document.getElementById('editModal').classList.remove('hidden');
@@ -135,16 +142,14 @@ let currentImageData = '';
 function openEditModal(product, category) {
   currentEditId    = product.id;
   currentImageData = product.image || '';
-
-  document.getElementById('modalTitle').textContent    = 'تعديل المنتج';
-  document.getElementById('editCategory').value        = category;
-  document.getElementById('editId').value              = product.id;
-  document.getElementById('editEmoji').value           = product.emoji;
-  document.getElementById('editName').value            = product.name;
-  document.getElementById('editDesc').value            = product.desc;
-  document.getElementById('editPrice').value           = product.price;
-  document.getElementById('editUnit').value            = product.unit;
-
+  document.getElementById('modalTitle').textContent = 'تعديل المنتج';
+  document.getElementById('editCategory').value     = category;
+  document.getElementById('editId').value           = product.id;
+  document.getElementById('editEmoji').value        = product.emoji;
+  document.getElementById('editName').value         = product.name;
+  document.getElementById('editDesc').value         = product.desc;
+  document.getElementById('editPrice').value        = product.price;
+  document.getElementById('editUnit').value         = product.unit;
   setPreview(product.image, product.emoji);
   document.getElementById('deleteProductBtn').classList.remove('hidden');
   document.getElementById('editModal').classList.remove('hidden');
@@ -195,7 +200,7 @@ document.getElementById('removeImageBtn').addEventListener('click', () => {
 });
 
 // ===== SAVE PRODUCT =====
-document.getElementById('saveProductBtn').addEventListener('click', () => {
+document.getElementById('saveProductBtn').addEventListener('click', async () => {
   const name  = document.getElementById('editName').value.trim();
   const emoji = document.getElementById('editEmoji').value.trim() || '🛒';
   const desc  = document.getElementById('editDesc').value.trim();
@@ -205,95 +210,105 @@ document.getElementById('saveProductBtn').addEventListener('click', () => {
 
   if (!name || !price) { showToast('يرجى ملء الاسم والسعر', true); return; }
 
-  const data = JARREBNI.getProducts();
-  const list = data[cat];
+  const btn = document.getElementById('saveProductBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري الحفظ...';
 
-  if (currentEditId) {
-    const idx = list.findIndex(p => p.id === currentEditId);
-    if (idx !== -1) list[idx] = { ...list[idx], emoji, image: currentImageData, name, desc, price, unit };
+  const ok = await JARREBNI.upsertProduct({
+    id:       currentEditId || (cat[0] + Date.now()),
+    category: cat,
+    emoji, image: currentImageData, name, desc, price, unit
+  });
+
+  btn.disabled = false;
+  btn.textContent = '💾 حفظ';
+
+  if (ok) {
+    await renderAdminProducts();
+    closeModal();
+    showToast('✓ تم الحفظ بنجاح');
   } else {
-    list.push({ id: cat[0] + Date.now(), emoji, image: currentImageData, name, desc, price, unit });
+    showToast('❌ خطأ في الحفظ', true);
   }
-
-  JARREBNI.saveProducts(data);
-  renderAdminProducts();
-  updateStats();
-  closeModal();
-  showToast('✓ تم الحفظ بنجاح');
 });
 
 // ===== DELETE PRODUCT =====
-document.getElementById('deleteProductBtn').addEventListener('click', () => {
+document.getElementById('deleteProductBtn').addEventListener('click', async () => {
   const name = document.getElementById('editName').value;
   if (!confirm(`هل تريد حذف "${name}"؟`)) return;
-
-  const cat  = document.getElementById('editCategory').value;
-  const data = JARREBNI.getProducts();
-  const list = data[cat];
-  const idx  = list.findIndex(p => p.id === currentEditId);
-  if (idx !== -1) list.splice(idx, 1);
-
-  JARREBNI.saveProducts(data);
-  renderAdminProducts();
-  updateStats();
-  closeModal();
-  showToast('✓ تم الحذف');
+  const ok = await JARREBNI.deleteProduct(currentEditId);
+  if (ok) {
+    await renderAdminProducts();
+    closeModal();
+    showToast('✓ تم الحذف');
+  } else {
+    showToast('❌ خطأ في الحذف', true);
+  }
 });
 
 // ===== SETTINGS =====
-function loadSettingsForm() {
-  const s = JARREBNI.getSettings();
-  document.getElementById('settingPhone').value      = s.phone      || '';
-  document.getElementById('settingWhatsapp').value   = s.whatsapp   || '';
-  document.getElementById('settingPromo').value      = s.promoText  || '';
-  document.getElementById('settingHours').value      = s.hours      || '';
-  document.getElementById('settingAdminEmail').value = s.adminEmail || '';
+async function loadSettingsForm() {
+  const s = await JARREBNI.getSettings();
+  document.getElementById('settingPhone').value    = s.phone     || '';
+  document.getElementById('settingWhatsapp').value = s.whatsapp  || '';
+  document.getElementById('settingPromo').value    = s.promoText || '';
+  document.getElementById('settingHours').value    = s.hours     || '';
+  const email = await JARREBNI.getAdminEmail();
+  const emailEl = document.getElementById('adminEmailDisplay');
+  if (emailEl) emailEl.value = email;
 }
 
-document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-  const phone      = document.getElementById('settingPhone').value.trim();
-  const whatsapp   = document.getElementById('settingWhatsapp').value.trim();
-  const promo      = document.getElementById('settingPromo').value.trim();
-  const hours      = document.getElementById('settingHours').value.trim();
-  const adminEmail = document.getElementById('settingAdminEmail').value.trim();
-  const newPwd     = document.getElementById('newPassword').value;
-  const confPwd    = document.getElementById('confirmPassword').value;
+document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
+  const phone    = document.getElementById('settingPhone').value.trim();
+  const whatsapp = document.getElementById('settingWhatsapp').value.trim();
+  const promo    = document.getElementById('settingPromo').value.trim();
+  const hours    = document.getElementById('settingHours').value.trim();
+  const newPwd   = document.getElementById('newPassword').value;
+  const confPwd  = document.getElementById('confirmPassword').value;
 
-  const settings = JARREBNI.getSettings();
-  if (phone)      settings.phone      = phone;
-  if (whatsapp)   settings.whatsapp   = whatsapp;
-  if (adminEmail) settings.adminEmail = adminEmail;
-  settings.promoText = promo;
-  if (hours) settings.hours = hours;
+  const btn = document.getElementById('saveSettingsBtn');
+  btn.disabled = true;
 
   if (newPwd) {
-    if (newPwd !== confPwd) { showToast('كلمتا المرور غير متطابقتين', true); return; }
-    if (newPwd.length < 6)  { showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل', true); return; }
-    settings.password = newPwd;
+    if (newPwd !== confPwd) { showToast('كلمتا المرور غير متطابقتين', true); btn.disabled = false; return; }
+    if (newPwd.length < 6)  { showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل', true); btn.disabled = false; return; }
+    const pwdOk = await JARREBNI.changePassword(newPwd);
+    if (!pwdOk) { showToast('❌ خطأ في تغيير كلمة المرور', true); btn.disabled = false; return; }
   }
 
-  JARREBNI.saveSettings(settings);
+  const updates = {};
+  if (phone)    updates.phone     = phone;
+  if (whatsapp) updates.whatsapp  = whatsapp;
+  updates.promoText = promo;
+  if (hours)    updates.hours     = hours;
+
+  const ok = await JARREBNI.saveSettings(updates);
+  btn.disabled = false;
   document.getElementById('newPassword').value     = '';
   document.getElementById('confirmPassword').value = '';
-  showToast('✓ تم حفظ الإعدادات');
+  showToast(ok ? '✓ تم حفظ الإعدادات' : '❌ خطأ في الحفظ', !ok);
 });
 
-document.getElementById('resetProductsBtn').addEventListener('click', () => {
-  if (!confirm('هل تريد إعادة تعيين جميع المنتجات إلى الإعدادات الافتراضية؟\nسيتم حذف جميع التعديلات والصور!')) return;
-  localStorage.removeItem('jarrebni_products');
-  renderAdminProducts();
-  updateStats();
-  showToast('✓ تم إعادة تعيين المنتجات');
+document.getElementById('resetProductsBtn').addEventListener('click', async () => {
+  if (!confirm('هل تريد إعادة تعيين جميع المنتجات إلى الإعدادات الافتراضية؟\nسيتم حذف جميع التعديلات!')) return;
+  const btn = document.getElementById('resetProductsBtn');
+  btn.disabled = true;
+  const ok = await JARREBNI.resetProducts();
+  btn.disabled = false;
+  if (ok) {
+    await renderAdminProducts();
+    showToast('✓ تم إعادة تعيين المنتجات');
+  } else {
+    showToast('❌ خطأ', true);
+  }
 });
 
 // ===== STATS =====
-function updateStats() {
-  const data = JARREBNI.getProducts();
-  const f = data.fruits.length;
-  const v = data.veggies.length;
-  document.getElementById('statFruits').textContent  = f;
-  document.getElementById('statVeggies').textContent = v;
-  document.getElementById('statTotal').textContent   = f + v;
+function updateStats(data) {
+  if (!data) return;
+  document.getElementById('statFruits').textContent  = data.fruits.length;
+  document.getElementById('statVeggies').textContent = data.veggies.length;
+  document.getElementById('statTotal').textContent   = data.fruits.length + data.veggies.length;
 }
 
 // ===== ORDERS =====
@@ -316,21 +331,24 @@ const STATUS_COLORS = {
 
 let ordersFilterValue = 'all';
 
-document.getElementById('ordersFilterStatus').addEventListener('change', (e) => {
+document.getElementById('ordersFilterStatus').addEventListener('change', async (e) => {
   ordersFilterValue = e.target.value;
-  renderOrders();
+  await renderOrders();
 });
 
-document.getElementById('clearAllOrdersBtn').addEventListener('click', () => {
+document.getElementById('clearAllOrdersBtn').addEventListener('click', async () => {
   if (!confirm('هل تريد حذف جميع الطلبات نهائياً؟')) return;
-  localStorage.removeItem('jarrebni_orders');
-  renderOrders();
-  updateOrdersBadge();
-  showToast('✓ تم مسح جميع الطلبات');
+  const ok = await JARREBNI.deleteAllOrders();
+  if (ok) {
+    await renderOrders();
+    showToast('✓ تم مسح جميع الطلبات');
+  } else {
+    showToast('❌ خطأ في المسح', true);
+  }
 });
 
-function renderOrders() {
-  let orders = JARREBNI.getOrders();
+async function renderOrders() {
+  let orders = await JARREBNI.getOrders();
   updateOrdersStats(orders);
 
   if (ordersFilterValue !== 'all') {
@@ -341,10 +359,7 @@ function renderOrders() {
   const list  = document.getElementById('ordersList');
   list.innerHTML = '';
 
-  if (orders.length === 0) {
-    empty.style.display = 'block';
-    return;
-  }
+  if (orders.length === 0) { empty.style.display = 'block'; return; }
   empty.style.display = 'none';
 
   orders.forEach(order => {
@@ -356,7 +371,7 @@ function renderOrders() {
       <div class="order-card-header">
         <div class="order-id-date">
           <span class="order-id">${order.id}</span>
-          <span class="order-date">🕐 ${order.date}</span>
+          <span class="order-date">🕐 ${order.date || ''}</span>
         </div>
         <span class="order-status-badge" style="background:${color}">${STATUS_LABELS[order.status] || order.status}</span>
       </div>
@@ -367,14 +382,15 @@ function renderOrders() {
       </div>
       ${order.products ? `<div class="order-products-text">🛒 ${order.products.replace(/\n/g, ' · ')}</div>` : ''}
       ${order.notes    ? `<div class="order-notes">📝 ${order.notes}</div>` : ''}
+      ${order.total && order.total !== '0' ? `<div class="order-products-text" style="color:#4CAF50;font-weight:700">💰 المجموع: ${order.total} دت</div>` : ''}
       <div class="order-card-actions">
         <select class="order-status-select" data-id="${order.id}">
-          <option value="new"        ${order.status==='new'        ? 'selected':''}>🆕 جديد</option>
-          <option value="confirmed"  ${order.status==='confirmed'  ? 'selected':''}>✅ مؤكد</option>
-          <option value="preparing"  ${order.status==='preparing'  ? 'selected':''}>🍳 قيد التحضير</option>
-          <option value="delivering" ${order.status==='delivering' ? 'selected':''}>🚚 في الطريق</option>
-          <option value="delivered"  ${order.status==='delivered'  ? 'selected':''}>📦 تم التوصيل</option>
-          <option value="cancelled"  ${order.status==='cancelled'  ? 'selected':''}>❌ ملغى</option>
+          <option value="new"        ${order.status==='new'        ?'selected':''}>🆕 جديد</option>
+          <option value="confirmed"  ${order.status==='confirmed'  ?'selected':''}>✅ مؤكد</option>
+          <option value="preparing"  ${order.status==='preparing'  ?'selected':''}>🍳 قيد التحضير</option>
+          <option value="delivering" ${order.status==='delivering' ?'selected':''}>🚚 في الطريق</option>
+          <option value="delivered"  ${order.status==='delivered'  ?'selected':''}>📦 تم التوصيل</option>
+          <option value="cancelled"  ${order.status==='cancelled'  ?'selected':''}>❌ ملغى</option>
         </select>
         <a class="btn-call" href="tel:${order.phone}">📞 اتصل</a>
         <button class="btn-delete-order" data-id="${order.id}">🗑️</button>
@@ -384,51 +400,41 @@ function renderOrders() {
   });
 
   list.querySelectorAll('.order-status-select').forEach(sel => {
-    sel.addEventListener('change', () => {
-      JARREBNI.updateOrderStatus(sel.dataset.id, sel.value);
-      renderOrders();
-      updateOrdersBadge();
+    sel.addEventListener('change', async () => {
+      await JARREBNI.updateOrderStatus(sel.dataset.id, sel.value);
+      await renderOrders();
       showToast('✓ تم تحديث حالة الطلب');
     });
   });
 
   list.querySelectorAll('.btn-delete-order').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       if (!confirm('هل تريد حذف هذا الطلب؟')) return;
-      JARREBNI.deleteOrder(btn.dataset.id);
-      renderOrders();
-      updateOrdersBadge();
+      await JARREBNI.deleteOrder(btn.dataset.id);
+      await renderOrders();
       showToast('✓ تم حذف الطلب');
     });
   });
 }
 
 function updateOrdersStats(orders) {
-  const all     = orders || JARREBNI.getOrders();
-  const newC    = all.filter(o => o.status === 'new').length;
-  const conf    = all.filter(o => o.status === 'confirmed').length;
-  const deliv   = all.filter(o => o.status === 'delivered').length;
-  const revenue = all
+  const newC    = orders.filter(o => o.status === 'new').length;
+  const conf    = orders.filter(o => o.status === 'confirmed').length;
+  const deliv   = orders.filter(o => o.status === 'delivered').length;
+  const revenue = orders
     .filter(o => o.status === 'delivered' && o.total)
-    .reduce((s, o) => s + parseFloat(o.total), 0)
+    .reduce((s, o) => s + parseFloat(o.total || 0), 0)
     .toFixed(2);
   document.getElementById('statOrdersNew').textContent       = newC;
   document.getElementById('statOrdersConfirmed').textContent = conf;
   document.getElementById('statOrdersDelivered').textContent = deliv;
-  document.getElementById('statOrdersTotal').textContent     = all.length;
+  document.getElementById('statOrdersTotal').textContent     = orders.length;
   document.getElementById('statOrdersRevenue').textContent   = revenue + ' دت';
 }
 
-function updateOrdersBadge() {
-  const newCount = JARREBNI.getOrders().filter(o => o.status === 'new').length;
-  const badge = document.getElementById('navOrdersBadge');
-  badge.textContent = newCount;
-  badge.classList.toggle('hidden', newCount === 0);
-}
-
 // ===== CUSTOMERS =====
-function renderCustomers() {
-  const orders = JARREBNI.getOrders();
+async function renderCustomers() {
+  const orders = await JARREBNI.getOrders();
   const grid   = document.getElementById('customersGrid');
   const empty  = document.getElementById('customersEmpty');
   grid.innerHTML = '';
@@ -441,7 +447,6 @@ function renderCustomers() {
   }
   empty.classList.add('hidden');
 
-  // Group orders by phone number
   const map = {};
   orders.forEach(o => {
     const key = o.phone || 'unknown';
@@ -459,10 +464,9 @@ function renderCustomers() {
   document.getElementById('statCustomersOrders').textContent = orders.length;
 
   customers.forEach(c => {
-    const lastOrder  = c.orders[0];
-    const delivered  = c.orders.filter(o => o.status === 'delivered').length;
-    const cancelled  = c.orders.filter(o => o.status === 'cancelled').length;
-    const initials   = (c.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const lastOrder = c.orders[0];
+    const delivered = c.orders.filter(o => o.status === 'delivered').length;
+    const initials  = (c.name || '?').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
     const card = document.createElement('div');
     card.className = 'customer-card';
     card.innerHTML = `
@@ -475,7 +479,7 @@ function renderCustomers() {
       <div class="customer-stats">
         <div class="customer-stat"><span>${c.orders.length}</span><label>طلب</label></div>
         <div class="customer-stat"><span>${delivered}</span><label>✅ موصّل</label></div>
-        <div class="customer-stat"><span>${c.totalSpent.toFixed(2)} دت</span><label>💰 مجموع</label></div>
+        <div class="customer-stat"><span>${c.totalSpent.toFixed(2)}</span><label>💰 دت</label></div>
       </div>
       <div class="customer-last-order">آخر طلب: ${lastOrder.date || '—'}</div>
     `;
@@ -486,16 +490,17 @@ function renderCustomers() {
 // ===== SOUND NOTIFICATION =====
 let lastOrderCount = 0;
 function startOrderNotificationPolling() {
-  lastOrderCount = JARREBNI.getOrders().filter(o => o.status === 'new').length;
-  setInterval(() => {
-    const current = JARREBNI.getOrders().filter(o => o.status === 'new').length;
-    if (current > lastOrderCount) {
-      playNotifSound();
-      showToast('🔔 طلب جديد وصل!');
-      updateOrdersBadge();
-    }
-    lastOrderCount = current;
-  }, 8000);
+  setInterval(async () => {
+    try {
+      const orders  = await JARREBNI.getOrders();
+      const current = orders.filter(o => o.status === 'new').length;
+      if (current > lastOrderCount) {
+        playNotifSound();
+        showToast('🔔 طلب جديد وصل!');
+      }
+      lastOrderCount = current;
+    } catch(e) {}
+  }, 15000);
 }
 
 function playNotifSound() {
@@ -517,8 +522,8 @@ function playNotifSound() {
 }
 
 // ===== REVIEWS =====
-function renderAdminReviews() {
-  const reviews = JARREBNI.getReviews();
+async function renderAdminReviews() {
+  const reviews = await JARREBNI.getReviews();
   const empty   = document.getElementById('reviewsEmpty');
   const list    = document.getElementById('adminReviewsList');
   list.innerHTML = '';
@@ -541,7 +546,7 @@ function renderAdminReviews() {
       <div class="order-card-header">
         <div class="order-id-date">
           <span class="order-id">${r.id}</span>
-          <span class="order-date">🕐 ${r.date}</span>
+          <span class="order-date">🕐 ${r.date || ''}</span>
         </div>
         <span class="order-status-badge" style="background:#F5A034;font-size:1rem;letter-spacing:2px">${stars}</span>
       </div>
@@ -555,29 +560,24 @@ function renderAdminReviews() {
   });
 
   list.querySelectorAll('.btn-delete-review').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       if (!confirm('هل تريد حذف هذا التقييم؟')) return;
-      JARREBNI.deleteReview(btn.dataset.id);
-      renderAdminReviews();
-      updateReviewsBadge();
+      await JARREBNI.deleteReview(btn.dataset.id);
+      await renderAdminReviews();
       showToast('✓ تم حذف التقييم');
     });
   });
 }
 
-function updateReviewsBadge() {
-  const count = JARREBNI.getReviews().length;
-  const badge = document.getElementById('navReviewsBadge');
-  badge.textContent = count;
-  badge.classList.toggle('hidden', count === 0);
-}
-
-document.getElementById('clearAllReviewsBtn').addEventListener('click', () => {
+document.getElementById('clearAllReviewsBtn').addEventListener('click', async () => {
   if (!confirm('هل تريد حذف جميع التقييمات نهائياً؟')) return;
-  localStorage.removeItem('jarrebni_reviews');
-  renderAdminReviews();
-  updateReviewsBadge();
-  showToast('✓ تم مسح جميع التقييمات');
+  const ok = await JARREBNI.deleteAllReviews();
+  if (ok) {
+    await renderAdminReviews();
+    showToast('✓ تم مسح جميع التقييمات');
+  } else {
+    showToast('❌ خطأ', true);
+  }
 });
 
 // ===== TOAST =====

@@ -248,9 +248,8 @@
           <div class="settings-card">
             <h3>🔒 أمان لوحة التحكم</h3>
             <div class="form-group">
-              <label>البريد الإلكتروني للمشرف</label>
-              <input type="email" id="settingAdminEmail" placeholder="admin@jarrebni.tn" />
-              <small>يُستخدم عند تسجيل الدخول إلى هذه اللوحة</small>
+              <label>البريد الإلكتروني (يُدار عبر Supabase)</label>
+              <input type="email" id="adminEmailDisplay" disabled style="opacity:.6;cursor:not-allowed" />
             </div>
             <div class="form-group">
               <label>كلمة المرور الجديدة</label>
@@ -333,7 +332,8 @@
   <!-- TOAST -->
   <div class="admin-toast" id="adminToast"></div>
 
-  <script src="products-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
