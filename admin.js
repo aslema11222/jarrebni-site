@@ -468,13 +468,15 @@ document.getElementById('galleryFileInput').addEventListener('change', (e) => {
   btn.textContent = '⏳ جاري التحميل...';
   wrap.classList.remove('hidden');
 
+  // Clear old thumbnails before adding new batch
+  wrap.innerHTML = '';
+
   let loaded = 0;
   files.forEach((file) => {
     const reader = new FileReader();
     reader.onload = (ev) => {
       pendingGalleryImages.push({ data: ev.target.result, caption: '' });
 
-      // add thumbnail
       const img = document.createElement('img');
       img.src = ev.target.result;
       wrap.appendChild(img);

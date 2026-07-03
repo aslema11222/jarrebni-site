@@ -762,15 +762,19 @@ a { text-decoration: none; color: inherit; }
 .gallery-preview-wrap {
   margin-top: 14px;
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
+  justify-content: flex-start;
   gap: 8px;
+  padding: 4px 0;
 }
 .gallery-preview-wrap img {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 8px;
   border: 2px solid var(--accent);
+  display: block;
 }
 .admin-gallery-grid {
   display: grid;
