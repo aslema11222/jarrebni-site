@@ -6,12 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ===== AUTH =====
 function showLogin() {
-  // Always redirect to the central login page
-  window.location.href = 'index.html';
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('accessDenied').classList.add('hidden');
 }
 
 function showDashboard() {
   document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('accessDenied').classList.add('hidden');
   document.getElementById('dashboard').classList.remove('hidden');
   renderAdminProducts();
   loadSettingsForm();
@@ -23,8 +25,9 @@ function showDashboard() {
 
 document.getElementById('loginForm').addEventListener('submit', (e) => {
   e.preventDefault();
-  const pwd = document.getElementById('passwordInput').value;
-  if (JARREBNI.login(pwd)) {
+  const email = document.getElementById('emailInput').value.trim();
+  const pwd   = document.getElementById('passwordInput').value;
+  if (JARREBNI.login(email, pwd)) {
     showDashboard();
   } else {
     document.getElementById('loginError').classList.remove('hidden');
@@ -52,17 +55,19 @@ document.getElementById('sidebarToggle').addEventListener('click', openSidebar);
 sidebarOverlay.addEventListener('click', closeSidebar);
 
 // ===== SIDEBAR NAV =====
+const SECTIONS = ['products', 'orders', 'customers', 'reviews', 'settings'];
+
 document.querySelectorAll('.nav-item[data-section]').forEach(item => {
   item.addEventListener('click', () => {
     document.querySelectorAll('.nav-item[data-section]').forEach(n => n.classList.remove('active'));
     item.classList.add('active');
     const sec = item.dataset.section;
-    document.getElementById('productsSection').classList.toggle('hidden', sec !== 'products');
-    document.getElementById('ordersSection').classList.toggle('hidden', sec !== 'orders');
-    document.getElementById('reviewsSection').classList.toggle('hidden', sec !== 'reviews');
-    document.getElementById('settingsSection').classList.toggle('hidden', sec !== 'settings');
-    if (sec === 'orders')  renderOrders();
-    if (sec === 'reviews') renderAdminReviews();
+    SECTIONS.forEach(s => {
+      document.getElementById(s + 'Section').classList.toggle('hidden', s !== sec);
+    });
+    if (sec === 'orders')    renderOrders();
+    if (sec === 'customers') renderCustomers();
+    if (sec === 'reviews')   renderAdminReviews();
     closeSidebar();
   });
 });
@@ -124,7 +129,7 @@ document.getElementById('addProductBtn').addEventListener('click', () => {
 });
 
 // ===== EDIT MODAL =====
-let currentEditId   = null;
+let currentEditId    = null;
 let currentImageData = '';
 
 function openEditModal(product, category) {
@@ -160,7 +165,6 @@ function setPreview(imageData, emoji) {
   }
 }
 
-// Close modal
 document.getElementById('modalClose').addEventListener('click', closeModal);
 document.getElementById('editModal').addEventListener('click', (e) => {
   if (e.target === document.getElementById('editModal')) closeModal();
@@ -170,12 +174,10 @@ function closeModal() {
   document.getElementById('imageUpload').value = '';
 }
 
-// Emoji input updates preview
 document.getElementById('editEmoji').addEventListener('input', (e) => {
   if (!currentImageData) setPreview('', e.target.value);
 });
 
-// Image upload
 document.getElementById('imageUpload').addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -187,7 +189,6 @@ document.getElementById('imageUpload').addEventListener('change', (e) => {
   reader.readAsDataURL(file);
 });
 
-// Remove image → use emoji
 document.getElementById('removeImageBtn').addEventListener('click', () => {
   currentImageData = '';
   setPreview('', document.getElementById('editEmoji').value || '🍊');
@@ -242,23 +243,26 @@ document.getElementById('deleteProductBtn').addEventListener('click', () => {
 // ===== SETTINGS =====
 function loadSettingsForm() {
   const s = JARREBNI.getSettings();
-  document.getElementById('settingPhone').value    = s.phone;
-  document.getElementById('settingWhatsapp').value = s.whatsapp;
-  document.getElementById('settingPromo').value    = s.promoText || '';
-  document.getElementById('settingHours').value    = s.hours || '';
+  document.getElementById('settingPhone').value      = s.phone      || '';
+  document.getElementById('settingWhatsapp').value   = s.whatsapp   || '';
+  document.getElementById('settingPromo').value      = s.promoText  || '';
+  document.getElementById('settingHours').value      = s.hours      || '';
+  document.getElementById('settingAdminEmail').value = s.adminEmail || '';
 }
 
 document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-  const phone    = document.getElementById('settingPhone').value.trim();
-  const whatsapp = document.getElementById('settingWhatsapp').value.trim();
-  const promo    = document.getElementById('settingPromo').value.trim();
-  const newPwd   = document.getElementById('newPassword').value;
-  const confPwd  = document.getElementById('confirmPassword').value;
+  const phone      = document.getElementById('settingPhone').value.trim();
+  const whatsapp   = document.getElementById('settingWhatsapp').value.trim();
+  const promo      = document.getElementById('settingPromo').value.trim();
+  const hours      = document.getElementById('settingHours').value.trim();
+  const adminEmail = document.getElementById('settingAdminEmail').value.trim();
+  const newPwd     = document.getElementById('newPassword').value;
+  const confPwd    = document.getElementById('confirmPassword').value;
 
-  const hours    = document.getElementById('settingHours').value.trim();
   const settings = JARREBNI.getSettings();
-  if (phone)    settings.phone    = phone;
-  if (whatsapp) settings.whatsapp = whatsapp;
+  if (phone)      settings.phone      = phone;
+  if (whatsapp)   settings.whatsapp   = whatsapp;
+  if (adminEmail) settings.adminEmail = adminEmail;
   settings.promoText = promo;
   if (hours) settings.hours = hours;
 
@@ -294,16 +298,20 @@ function updateStats() {
 
 // ===== ORDERS =====
 const STATUS_LABELS = {
-  new:       '🆕 جديد',
-  confirmed: '✅ مؤكد',
-  delivered: '📦 تم التوصيل',
-  cancelled: '❌ ملغى'
+  new:        '🆕 جديد',
+  confirmed:  '✅ مؤكد',
+  preparing:  '🍳 قيد التحضير',
+  delivering: '🚚 في الطريق',
+  delivered:  '📦 تم التوصيل',
+  cancelled:  '❌ ملغى'
 };
 const STATUS_COLORS = {
-  new:       '#E8820C',
-  confirmed: '#2196F3',
-  delivered: '#4CAF50',
-  cancelled: '#e53935'
+  new:        '#E8820C',
+  confirmed:  '#2196F3',
+  preparing:  '#9C27B0',
+  delivering: '#00ACC1',
+  delivered:  '#4CAF50',
+  cancelled:  '#e53935'
 };
 
 let ordersFilterValue = 'all';
@@ -340,7 +348,7 @@ function renderOrders() {
   empty.style.display = 'none';
 
   orders.forEach(order => {
-    const card = document.createElement('div');
+    const card  = document.createElement('div');
     card.className = 'order-card';
     const color = STATUS_COLORS[order.status] || '#999';
     card.style.borderRightColor = color;
@@ -361,10 +369,12 @@ function renderOrders() {
       ${order.notes    ? `<div class="order-notes">📝 ${order.notes}</div>` : ''}
       <div class="order-card-actions">
         <select class="order-status-select" data-id="${order.id}">
-          <option value="new"       ${order.status==='new'       ? 'selected':''}>🆕 جديد</option>
-          <option value="confirmed" ${order.status==='confirmed' ? 'selected':''}>✅ مؤكد</option>
-          <option value="delivered" ${order.status==='delivered' ? 'selected':''}>📦 تم التوصيل</option>
-          <option value="cancelled" ${order.status==='cancelled' ? 'selected':''}>❌ ملغى</option>
+          <option value="new"        ${order.status==='new'        ? 'selected':''}>🆕 جديد</option>
+          <option value="confirmed"  ${order.status==='confirmed'  ? 'selected':''}>✅ مؤكد</option>
+          <option value="preparing"  ${order.status==='preparing'  ? 'selected':''}>🍳 قيد التحضير</option>
+          <option value="delivering" ${order.status==='delivering' ? 'selected':''}>🚚 في الطريق</option>
+          <option value="delivered"  ${order.status==='delivered'  ? 'selected':''}>📦 تم التوصيل</option>
+          <option value="cancelled"  ${order.status==='cancelled'  ? 'selected':''}>❌ ملغى</option>
         </select>
         <a class="btn-call" href="tel:${order.phone}">📞 اتصل</a>
         <button class="btn-delete-order" data-id="${order.id}">🗑️</button>
@@ -416,6 +426,63 @@ function updateOrdersBadge() {
   badge.classList.toggle('hidden', newCount === 0);
 }
 
+// ===== CUSTOMERS =====
+function renderCustomers() {
+  const orders = JARREBNI.getOrders();
+  const grid   = document.getElementById('customersGrid');
+  const empty  = document.getElementById('customersEmpty');
+  grid.innerHTML = '';
+
+  if (orders.length === 0) {
+    empty.classList.remove('hidden');
+    document.getElementById('statCustomersTotal').textContent  = 0;
+    document.getElementById('statCustomersOrders').textContent = 0;
+    return;
+  }
+  empty.classList.add('hidden');
+
+  // Group orders by phone number
+  const map = {};
+  orders.forEach(o => {
+    const key = o.phone || 'unknown';
+    if (!map[key]) {
+      map[key] = { name: o.name, phone: o.phone, address: o.address, orders: [], totalSpent: 0 };
+    }
+    map[key].orders.push(o);
+    if (o.status === 'delivered' && o.total) {
+      map[key].totalSpent += parseFloat(o.total);
+    }
+  });
+
+  const customers = Object.values(map).sort((a, b) => b.orders.length - a.orders.length);
+  document.getElementById('statCustomersTotal').textContent  = customers.length;
+  document.getElementById('statCustomersOrders').textContent = orders.length;
+
+  customers.forEach(c => {
+    const lastOrder  = c.orders[0];
+    const delivered  = c.orders.filter(o => o.status === 'delivered').length;
+    const cancelled  = c.orders.filter(o => o.status === 'cancelled').length;
+    const initials   = (c.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'customer-card';
+    card.innerHTML = `
+      <div class="customer-avatar">${initials}</div>
+      <div class="customer-info">
+        <div class="customer-name">${c.name || '—'}</div>
+        <div class="customer-phone"><a href="tel:${c.phone}">📞 ${c.phone || '—'}</a></div>
+        <div class="customer-address">📍 ${c.address || '—'}</div>
+      </div>
+      <div class="customer-stats">
+        <div class="customer-stat"><span>${c.orders.length}</span><label>طلب</label></div>
+        <div class="customer-stat"><span>${delivered}</span><label>✅ موصّل</label></div>
+        <div class="customer-stat"><span>${c.totalSpent.toFixed(2)} دت</span><label>💰 مجموع</label></div>
+      </div>
+      <div class="customer-last-order">آخر طلب: ${lastOrder.date || '—'}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
 // ===== SOUND NOTIFICATION =====
 let lastOrderCount = 0;
 function startOrderNotificationPolling() {
@@ -449,7 +516,6 @@ function playNotifSound() {
   } catch(e) {}
 }
 
-
 // ===== REVIEWS =====
 function renderAdminReviews() {
   const reviews = JARREBNI.getReviews();
@@ -469,8 +535,7 @@ function renderAdminReviews() {
 
   reviews.forEach(r => {
     const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-    const initials = r.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-    const card = document.createElement('div');
+    const card  = document.createElement('div');
     card.className = 'order-card';
     card.innerHTML = `
       <div class="order-card-header">
@@ -480,9 +545,7 @@ function renderAdminReviews() {
         </div>
         <span class="order-status-badge" style="background:#F5A034;font-size:1rem;letter-spacing:2px">${stars}</span>
       </div>
-      <div class="order-client-info">
-        <span>👤 ${r.name}</span>
-      </div>
+      <div class="order-client-info"><span>👤 ${r.name}</span></div>
       <div class="order-products-text">💬 "${r.text}"</div>
       <div class="order-card-actions">
         <button class="btn-delete-order btn-delete-review" data-id="${r.id}">🗑️ حذف</button>

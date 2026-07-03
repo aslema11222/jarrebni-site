@@ -33,11 +33,12 @@ const JARREBNI = (() => {
   };
 
   const DEFAULT_SETTINGS = {
-    phone:     '+216 XX XXX XXX',
-    whatsapp:  '216XXXXXXXX',
-    password:  'jarrebni2025',
-    promoText: '🔥 عرض الأسبوع: توصيل مجاني في بنزرت الشمالية!',
-    hours:     'السبت - الخميس: 8:00ص - 8:00م\nالجمعة: مغلق'
+    phone:      '+216 XX XXX XXX',
+    whatsapp:   '216XXXXXXXX',
+    password:   'jarrebni2025',
+    adminEmail: 'admin@jarrebni.tn',
+    promoText:  '🔥 عرض الأسبوع: توصيل مجاني في بنزرت الشمالية!',
+    hours:      'السبت - الخميس: 8:00ص - 8:00م\nالجمعة: مغلق'
   };
 
   function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
@@ -64,8 +65,9 @@ const JARREBNI = (() => {
     isLoggedIn() {
       return sessionStorage.getItem(KEYS.AUTH) === '1';
     },
-    login(pwd) {
-      if (pwd === this.getSettings().password) {
+    login(email, pwd) {
+      const s = this.getSettings();
+      if (email === s.adminEmail && pwd === s.password) {
         sessionStorage.setItem(KEYS.AUTH, '1');
         return true;
       }

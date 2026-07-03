@@ -10,21 +10,35 @@
 </head>
 <body>
 
+  <!-- ===== ACCESS DENIED ===== -->
+  <div class="access-denied hidden" id="accessDenied">
+    <div class="access-denied-card">
+      <div style="font-size:4rem;margin-bottom:16px">🔒</div>
+      <h2>وصول مرفوض</h2>
+      <p>هذه الصفحة مخصصة للمشرف فقط.<br/>تحتاج إلى بريد إلكتروني وكلمة مرور صحيحة.</p>
+      <a href="shop.html" class="btn-login" style="display:inline-block;margin-top:20px;text-decoration:none;padding:12px 32px">← العودة للموقع</a>
+    </div>
+  </div>
+
   <!-- ===== LOGIN SCREEN ===== -->
   <div class="login-screen" id="loginScreen">
     <div class="login-card">
       <div class="login-logo">🍊🍎🍌<br/><span>جربني</span></div>
       <h2>لوحة التحكم</h2>
-      <p class="login-sub">أدخل كلمة المرور للمتابعة</p>
+      <p class="login-sub">مخصصة للمشرف فقط — أدخل بيانات الدخول</p>
       <form id="loginForm">
+        <div class="form-group">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="emailInput" placeholder="admin@jarrebni.tn" autocomplete="email" />
+        </div>
         <div class="form-group">
           <label>كلمة المرور</label>
           <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" />
         </div>
-        <p class="login-error hidden" id="loginError">كلمة المرور غير صحيحة ❌</p>
+        <p class="login-error hidden" id="loginError">بيانات الدخول غير صحيحة ❌</p>
         <button type="submit" class="btn-login">دخول →</button>
       </form>
-      <a href="index.html" class="back-link">← العودة إلى الصفحة الرئيسية</a>
+      <a href="shop.html" class="back-link">← العودة إلى الموقع</a>
     </div>
   </div>
 
@@ -44,11 +58,14 @@
       <nav class="sidebar-nav">
         <button class="nav-item active" data-section="products">🛒 المنتجات</button>
         <button class="nav-item" data-section="orders">📋 الطلبات <span class="orders-badge hidden" id="navOrdersBadge">0</span></button>
+        <button class="nav-item" data-section="customers">👥 العملاء</button>
         <button class="nav-item" data-section="reviews">⭐ التقييمات <span class="orders-badge hidden" id="navReviewsBadge">0</span></button>
         <button class="nav-item" data-section="settings">⚙️ الإعدادات</button>
-        <a href="shop.html" class="nav-item nav-link" target="_blank">🌐 الموقع</a>
       </nav>
-      <button class="sidebar-logout" id="logoutBtn">🚪 تسجيل الخروج</button>
+      <div class="sidebar-bottom">
+        <a href="shop.html" class="btn-back-to-app" target="_blank">🌐 العودة للموقع</a>
+        <button class="sidebar-logout" id="logoutBtn">🚪 تسجيل الخروج</button>
+      </div>
     </aside>
 
     <!-- MAIN -->
@@ -64,7 +81,6 @@
           <button class="btn-add-product" id="addProductBtn">+ إضافة منتج</button>
         </div>
 
-        <!-- Stats -->
         <div class="admin-stats-row">
           <div class="admin-stat-box">
             <span id="statFruits">0</span>
@@ -92,13 +108,15 @@
         <div class="admin-header">
           <div>
             <h1>الطلبات</h1>
-            <p class="admin-sub">جميع طلبات العملاء مرتبة من الأحدث إلى الأقدم</p>
+            <p class="admin-sub">جميع طلبات العملاء — غيّر الحالة من هنا</p>
           </div>
           <div class="orders-header-actions">
             <select id="ordersFilterStatus" class="orders-filter">
               <option value="all">كل الطلبات</option>
               <option value="new">🆕 جديد</option>
               <option value="confirmed">✅ مؤكد</option>
+              <option value="preparing">🍳 قيد التحضير</option>
+              <option value="delivering">🚚 في الطريق</option>
               <option value="delivered">📦 تم التوصيل</option>
               <option value="cancelled">❌ ملغى</option>
             </select>
@@ -106,7 +124,6 @@
           </div>
         </div>
 
-        <!-- Stats row -->
         <div class="admin-stats-row">
           <div class="admin-stat-box">
             <span id="statOrdersNew">0</span>
@@ -140,6 +157,31 @@
         </div>
       </div>
 
+      <!-- CUSTOMERS SECTION -->
+      <div class="admin-section hidden" id="customersSection">
+        <div class="admin-header">
+          <div>
+            <h1>👥 العملاء</h1>
+            <p class="admin-sub">قائمة العملاء المستخرجة من الطلبات</p>
+          </div>
+        </div>
+        <div class="admin-stats-row">
+          <div class="admin-stat-box">
+            <span id="statCustomersTotal">0</span>
+            <label>👥 عميل</label>
+          </div>
+          <div class="admin-stat-box accent">
+            <span id="statCustomersOrders">0</span>
+            <label>📋 طلب</label>
+          </div>
+        </div>
+        <div class="orders-empty hidden" id="customersEmpty">
+          <p style="font-size:3rem">👥</p>
+          <p>لا يوجد عملاء بعد</p>
+          <p style="opacity:.6;font-size:.9rem">يظهر العملاء هنا تلقائياً عند استلام الطلبات</p>
+        </div>
+        <div class="customers-grid" id="customersGrid"></div>
+      </div>
 
       <!-- REVIEWS SECTION -->
       <div class="admin-section hidden" id="reviewsSection">
@@ -152,7 +194,6 @@
             <button class="btn-clear-orders" id="clearAllReviewsBtn">🗑️ مسح الكل</button>
           </div>
         </div>
-        <!-- Stats -->
         <div class="admin-stats-row">
           <div class="admin-stat-box">
             <span id="statReviewsTotal">0</span>
@@ -205,7 +246,12 @@
             </div>
           </div>
           <div class="settings-card">
-            <h3>🔒 تغيير كلمة المرور</h3>
+            <h3>🔒 أمان لوحة التحكم</h3>
+            <div class="form-group">
+              <label>البريد الإلكتروني للمشرف</label>
+              <input type="email" id="settingAdminEmail" placeholder="admin@jarrebni.tn" />
+              <small>يُستخدم عند تسجيل الدخول إلى هذه اللوحة</small>
+            </div>
             <div class="form-group">
               <label>كلمة المرور الجديدة</label>
               <input type="password" id="newPassword" placeholder="6 أحرف على الأقل" />
@@ -233,7 +279,6 @@
         <button class="modal-close" id="modalClose" title="إغلاق">×</button>
       </div>
 
-      <!-- Image -->
       <div class="image-section">
         <div class="image-preview" id="imagePreview">
           <span id="previewEmoji">🍊</span>
@@ -249,7 +294,6 @@
         </div>
       </div>
 
-      <!-- Form -->
       <div class="modal-form">
         <input type="hidden" id="editId" />
         <input type="hidden" id="editCategory" />
