@@ -60,11 +60,9 @@ document.querySelectorAll('.nav-item[data-section]').forEach(item => {
     document.getElementById('productsSection').classList.toggle('hidden', sec !== 'products');
     document.getElementById('ordersSection').classList.toggle('hidden', sec !== 'orders');
     document.getElementById('reviewsSection').classList.toggle('hidden', sec !== 'reviews');
-    document.getElementById('gallerySection').classList.toggle('hidden', sec !== 'gallery');
     document.getElementById('settingsSection').classList.toggle('hidden', sec !== 'settings');
     if (sec === 'orders')  renderOrders();
     if (sec === 'reviews') renderAdminReviews();
-    if (sec === 'gallery') renderAdminGallery();
     closeSidebar();
   });
 });
@@ -451,110 +449,6 @@ function playNotifSound() {
   } catch(e) {}
 }
 
-// ===== GALLERY =====
-let pendingGalleryImages = []; // { data: base64, caption: '' }
-
-document.getElementById('galleryUploadArea').addEventListener('click', () => {
-  document.getElementById('galleryFileInput').click();
-});
-
-document.getElementById('galleryFileInput').addEventListener('change', (e) => {
-  const files = Array.from(e.target.files);
-  if (!files.length) return;
-
-  const btn    = document.getElementById('addGalleryPhotoBtn');
-  const wrap   = document.getElementById('galleryPreviewWrap');
-  const thumbs = document.getElementById('galleryPreviewThumbs');
-
-  btn.disabled = true;
-  btn.textContent = '⏳ جاري التحميل...';
-  wrap.classList.remove('hidden');
-
-  let loaded = 0;
-  files.forEach((file) => {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      pendingGalleryImages.push({ data: ev.target.result });
-      const img = document.createElement('img');
-      img.src = ev.target.result;
-      thumbs.appendChild(img);
-      loaded++;
-      if (loaded === files.length) {
-        btn.disabled = false;
-        btn.textContent = `💾 نشر ${pendingGalleryImages.length} صورة على الموقع`;
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-  document.getElementById('galleryFileInput').value = '';
-});
-
-document.getElementById('clearPendingBtn').addEventListener('click', () => {
-  pendingGalleryImages = [];
-  document.getElementById('galleryPreviewThumbs').innerHTML = '';
-  document.getElementById('galleryPreviewWrap').classList.add('hidden');
-  document.getElementById('addGalleryPhotoBtn').textContent = '💾 إضافة الصور';
-  document.getElementById('addGalleryPhotoBtn').disabled = false;
-});
-
-document.getElementById('addGalleryPhotoBtn').addEventListener('click', () => {
-  if (!pendingGalleryImages.length) { showToast('اختر صورة أولاً', true); return; }
-  const caption = document.getElementById('galleryCaptionInput').value.trim();
-  const ts = Date.now();
-  pendingGalleryImages.forEach((item, i) => {
-    JARREBNI.saveGalleryPhoto({ id: 'GAL-' + (ts + i), image: item.data, caption });
-  });
-  const count = pendingGalleryImages.length;
-  pendingGalleryImages = [];
-  document.getElementById('galleryCaptionInput').value = '';
-  const wrap   = document.getElementById('galleryPreviewWrap');
-  const thumbs = document.getElementById('galleryPreviewThumbs');
-  thumbs.innerHTML = '';
-  wrap.classList.add('hidden');
-  document.getElementById('addGalleryPhotoBtn').textContent = '💾 إضافة الصور';
-  renderAdminGallery();
-  showToast(`✓ تمت إضافة ${count} صورة على الموقع!`);
-});
-
-document.getElementById('clearAllGalleryBtn').addEventListener('click', () => {
-  if (!confirm('هل تريد حذف جميع صور المعرض؟')) return;
-  localStorage.removeItem('jarrebni_gallery');
-  renderAdminGallery();
-  showToast('✓ تم مسح المعرض');
-});
-
-function renderAdminGallery() {
-  const grid  = document.getElementById('adminGalleryGrid');
-  const empty = document.getElementById('galleryAdminEmpty');
-  const label = document.getElementById('galleryGridLabel');
-  const photos = JARREBNI.getGallery();
-  grid.innerHTML = '';
-  if (photos.length === 0) {
-    empty.style.display = 'block';
-    if (label) label.style.display = 'none';
-    return;
-  }
-  empty.style.display = 'none';
-  if (label) label.style.display = 'block';
-  photos.forEach(ph => {
-    const item = document.createElement('div');
-    item.className = 'admin-gallery-item';
-    item.innerHTML = `
-      <img src="${ph.image}" alt="${ph.caption || ''}">
-      ${ph.caption ? `<p class="admin-gallery-caption">${ph.caption}</p>` : ''}
-      <button class="btn-delete-gallery" data-id="${ph.id}">🗑️ حذف</button>
-    `;
-    grid.appendChild(item);
-  });
-  grid.querySelectorAll('.btn-delete-gallery').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!confirm('حذف هذه الصورة؟')) return;
-      JARREBNI.deleteGalleryPhoto(btn.dataset.id);
-      renderAdminGallery();
-      showToast('✓ تم حذف الصورة');
-    });
-  });
-}
 
 // ===== REVIEWS =====
 function renderAdminReviews() {

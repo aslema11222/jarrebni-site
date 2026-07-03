@@ -45,7 +45,6 @@
         <button class="nav-item active" data-section="products">🛒 المنتجات</button>
         <button class="nav-item" data-section="orders">📋 الطلبات <span class="orders-badge hidden" id="navOrdersBadge">0</span></button>
         <button class="nav-item" data-section="reviews">⭐ التقييمات <span class="orders-badge hidden" id="navReviewsBadge">0</span></button>
-        <button class="nav-item" data-section="gallery">📸 المعرض</button>
         <button class="nav-item" data-section="settings">⚙️ الإعدادات</button>
         <a href="shop.html" class="nav-item nav-link" target="_blank">🌐 الموقع</a>
       </nav>
@@ -141,56 +140,6 @@
         </div>
       </div>
 
-      <!-- GALLERY SECTION -->
-      <div class="admin-section hidden" id="gallerySection">
-        <div class="admin-header">
-          <div>
-            <h1>📸 المعرض</h1>
-            <p class="admin-sub">صور مخزونك وتوصيلاتك — تظهر في الموقع للزبائن</p>
-          </div>
-          <div class="orders-header-actions">
-            <button class="btn-clear-orders" id="clearAllGalleryBtn">🗑️ مسح الكل</button>
-          </div>
-        </div>
-
-        <!-- Upload card -->
-        <div class="gallery-upload-card">
-          <h3>➕ إضافة صور جديدة</h3>
-
-          <div class="gallery-upload-area" id="galleryUploadArea">
-            <span>📷</span>
-            <p>انقر هنا واختر صورة أو عدة صور</p>
-            <small style="color:#999;margin-top:4px;display:block">على الكمبيوتر: اضغط Ctrl وانقر على عدة صور في نفس الوقت</small>
-            <input type="file" id="galleryFileInput" accept="image/*" multiple />
-          </div>
-
-          <!-- Preview -->
-          <div class="gallery-preview-wrap hidden" id="galleryPreviewWrap">
-            <div class="gallery-preview-header">
-              <p class="gallery-preview-label">📎 الصور المختارة:</p>
-              <button type="button" class="btn-clear-pending" id="clearPendingBtn">✕ إلغاء الكل</button>
-            </div>
-            <div class="gallery-preview-thumbs" id="galleryPreviewThumbs"></div>
-          </div>
-
-          <div class="form-group" style="margin-top:16px">
-            <label>تعليق للصور (اختياري)</label>
-            <input type="text" id="galleryCaptionInput" placeholder="مثال: توصيل اليوم في بنزرت 🚛" />
-          </div>
-          <button class="btn-save-settings" id="addGalleryPhotoBtn" style="margin-top:14px;width:100%">💾 إضافة الصور</button>
-        </div>
-
-        <!-- Saved photos grid -->
-        <div class="gallery-grid-label" id="galleryGridLabel" style="display:none">
-          <h3>🖼️ الصور المنشورة على الموقع</h3>
-        </div>
-        <div id="adminGalleryGrid" class="admin-gallery-grid"></div>
-        <div class="orders-empty" id="galleryAdminEmpty" style="display:none">
-          <p style="font-size:3rem">📸</p>
-          <p>لا توجد صور بعد</p>
-          <p style="opacity:.6;font-size:.9rem">أضف صورك أعلاه لتظهر للزبائن</p>
-        </div>
-      </div>
 
       <!-- REVIEWS SECTION -->
       <div class="admin-section hidden" id="reviewsSection">
