@@ -73,14 +73,17 @@ function renderGrid(gridId, items) {
     const thumb = p.image
       ? `<img src="${p.image}" class="product-img" alt="${p.name}">`
       : `<div class="product-emoji">${p.emoji}</div>`;
-    const addLabel  = (typeof getLang === 'function' && TRANSLATIONS?.[getLang()]?.t?.['btn.add']) || '+ أضف';
-    const doneLabel = getLang?.() === 'fr' ? '✓ Ajouté' : getLang?.() === 'en' ? '✓ Added' : '✓ تمت';
+    const addLabel  = (typeof t === 'function') ? t('btn.add')   : '+ أضف';
+    const doneLabel = (typeof t === 'function') ? t('btn.added') : '✓ تمت';
+    const pName = (typeof t === 'function') ? (t(`product.${p.id}.name`) !== `product.${p.id}.name` ? t(`product.${p.id}.name`) : p.name) : p.name;
+    const pDesc = (typeof t === 'function') ? (t(`product.${p.id}.desc`) !== `product.${p.id}.desc` ? t(`product.${p.id}.desc`) : p.desc) : p.desc;
+    const pUnit = (typeof translateUnit === 'function') ? translateUnit(p.unit) : p.unit;
     card.innerHTML = `
       ${thumb}
-      <h3>${p.name}</h3>
-      <p>${p.desc}</p>
+      <h3>${pName}</h3>
+      <p>${pDesc}</p>
       <div class="product-footer">
-        <span class="price">${p.price} دت/${p.unit}</span>
+        <span class="price">${p.price} دت/${pUnit}</span>
         <button class="btn-add">${addLabel}</button>
       </div>
     `;
