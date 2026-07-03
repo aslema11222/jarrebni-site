@@ -10,8 +10,8 @@
 //  4. Dans Settings > API, copier Project URL et anon public key
 //  5. Remplacer les deux valeurs ci-dessous
 //
-const SUPABASE_URL      = 'https://VOTRE-ID.supabase.co';
-const SUPABASE_ANON_KEY = 'VOTRE-CLE-ANON';
+const SUPABASE_URL      = 'https://frcepxpnhsifhdcmpdsl.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_8UFRF09WFB3OO1hBX5ZGkg_V5wMQbR9';
 
 const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
