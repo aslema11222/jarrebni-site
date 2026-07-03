@@ -36,6 +36,7 @@
         <a href="#products" data-i18n="nav.products">منتجاتنا</a>
         <a href="#why-us"   data-i18n="nav.whyus">لماذا جربني</a>
         <a href="#order"    data-i18n="nav.order">اطلب الآن</a>
+        <a href="#gallery"  data-i18n="nav.gallery">معرضنا</a>
         <a href="#reviews"  data-i18n="nav.reviews">التقييمات</a>
         <a href="#contact"  data-i18n="nav.contact">تواصل معنا</a>
         <a href="settings.html" title="Settings / Paramètres / الإعدادات" style="font-size:1.2rem;">⚙️</a>
@@ -143,6 +144,19 @@
     </div>
   </section>
 
+  <!-- ===== GALLERY ===== -->
+  <section class="gallery-section" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-i18n="gallery.tag">معرض صورنا</span>
+        <h2 data-i18n="gallery.title">من مزرعتنا إلى منزلك</h2>
+        <p data-i18n="gallery.desc">صور حقيقية من مخزوننا وتوصيلاتنا اليومية</p>
+      </div>
+      <p class="gallery-empty" id="galleryEmpty" data-i18n="gallery.empty">لا توجد صور بعد — المدير سيضيفها قريباً</p>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </section>
+
   <!-- ===== CUSTOMER REVIEWS ===== -->
   <section class="reviews-section" id="reviews">
     <div class="container">
@@ -242,8 +256,8 @@
         </a>
         <div class="contact-card">
           <div class="contact-icon">📞</div>
-          <h3>اتصل بنا</h3>
-          <p>متاحون من السبت إلى الخميس<br />من 8 صباحاً إلى 8 مساءً</p>
+          <h3 data-i18n="contact.phone.title">اتصل بنا</h3>
+          <p id="hoursDisplay">السبت - الخميس: 8:00ص - 8:00م<br>الجمعة: مغلق</p>
           <span class="contact-link phone-display">+216 XX XXX XXX</span>
         </div>
         <div class="contact-card">

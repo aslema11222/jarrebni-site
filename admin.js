@@ -18,6 +18,7 @@ function showDashboard() {
   updateStats();
   updateOrdersBadge();
   updateReviewsBadge();
+  startOrderNotificationPolling();
 }
 
 document.getElementById('loginForm').addEventListener('submit', (e) => {
@@ -59,9 +60,11 @@ document.querySelectorAll('.nav-item[data-section]').forEach(item => {
     document.getElementById('productsSection').classList.toggle('hidden', sec !== 'products');
     document.getElementById('ordersSection').classList.toggle('hidden', sec !== 'orders');
     document.getElementById('reviewsSection').classList.toggle('hidden', sec !== 'reviews');
+    document.getElementById('gallerySection').classList.toggle('hidden', sec !== 'gallery');
     document.getElementById('settingsSection').classList.toggle('hidden', sec !== 'settings');
     if (sec === 'orders')  renderOrders();
     if (sec === 'reviews') renderAdminReviews();
+    if (sec === 'gallery') renderAdminGallery();
     closeSidebar();
   });
 });
@@ -244,6 +247,7 @@ function loadSettingsForm() {
   document.getElementById('settingPhone').value    = s.phone;
   document.getElementById('settingWhatsapp').value = s.whatsapp;
   document.getElementById('settingPromo').value    = s.promoText || '';
+  document.getElementById('settingHours').value    = s.hours || '';
 }
 
 document.getElementById('saveSettingsBtn').addEventListener('click', () => {
@@ -253,10 +257,12 @@ document.getElementById('saveSettingsBtn').addEventListener('click', () => {
   const newPwd   = document.getElementById('newPassword').value;
   const confPwd  = document.getElementById('confirmPassword').value;
 
+  const hours    = document.getElementById('settingHours').value.trim();
   const settings = JARREBNI.getSettings();
   if (phone)    settings.phone    = phone;
   if (whatsapp) settings.whatsapp = whatsapp;
   settings.promoText = promo;
+  if (hours) settings.hours = hours;
 
   if (newPwd) {
     if (newPwd !== confPwd) { showToast('كلمتا المرور غير متطابقتين', true); return; }
@@ -390,14 +396,19 @@ function renderOrders() {
 }
 
 function updateOrdersStats(orders) {
-  const all    = orders || JARREBNI.getOrders();
-  const newC   = all.filter(o => o.status === 'new').length;
-  const conf   = all.filter(o => o.status === 'confirmed').length;
-  const deliv  = all.filter(o => o.status === 'delivered').length;
+  const all     = orders || JARREBNI.getOrders();
+  const newC    = all.filter(o => o.status === 'new').length;
+  const conf    = all.filter(o => o.status === 'confirmed').length;
+  const deliv   = all.filter(o => o.status === 'delivered').length;
+  const revenue = all
+    .filter(o => o.status === 'delivered' && o.total)
+    .reduce((s, o) => s + parseFloat(o.total), 0)
+    .toFixed(2);
   document.getElementById('statOrdersNew').textContent       = newC;
   document.getElementById('statOrdersConfirmed').textContent = conf;
   document.getElementById('statOrdersDelivered').textContent = deliv;
   document.getElementById('statOrdersTotal').textContent     = all.length;
+  document.getElementById('statOrdersRevenue').textContent   = revenue + ' دت';
 }
 
 function updateOrdersBadge() {
@@ -405,6 +416,109 @@ function updateOrdersBadge() {
   const badge = document.getElementById('navOrdersBadge');
   badge.textContent = newCount;
   badge.classList.toggle('hidden', newCount === 0);
+}
+
+// ===== SOUND NOTIFICATION =====
+let lastOrderCount = 0;
+function startOrderNotificationPolling() {
+  lastOrderCount = JARREBNI.getOrders().filter(o => o.status === 'new').length;
+  setInterval(() => {
+    const current = JARREBNI.getOrders().filter(o => o.status === 'new').length;
+    if (current > lastOrderCount) {
+      playNotifSound();
+      showToast('🔔 طلب جديد وصل!');
+      updateOrdersBadge();
+    }
+    lastOrderCount = current;
+  }, 8000);
+}
+
+function playNotifSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.15, 0.30].forEach((delay, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = i === 0 ? 660 : i === 1 ? 880 : 1100;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.3, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.25);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.25);
+    });
+  } catch(e) {}
+}
+
+// ===== GALLERY =====
+let pendingGalleryImage = '';
+
+document.getElementById('galleryUploadArea').addEventListener('click', () => {
+  document.getElementById('galleryFileInput').click();
+});
+
+document.getElementById('galleryFileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    pendingGalleryImage = ev.target.result;
+    const wrap = document.getElementById('galleryPreviewWrap');
+    document.getElementById('galleryPreviewImg').src = pendingGalleryImage;
+    wrap.classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('addGalleryPhotoBtn').addEventListener('click', () => {
+  if (!pendingGalleryImage) { showToast('اختر صورة أولاً', true); return; }
+  const caption = document.getElementById('galleryCaptionInput').value.trim();
+  JARREBNI.saveGalleryPhoto({ id: 'GAL-' + Date.now(), image: pendingGalleryImage, caption });
+  pendingGalleryImage = '';
+  document.getElementById('galleryCaptionInput').value = '';
+  document.getElementById('galleryPreviewWrap').classList.add('hidden');
+  document.getElementById('galleryPreviewImg').src = '';
+  document.getElementById('galleryFileInput').value = '';
+  renderAdminGallery();
+  showToast('✓ تمت إضافة الصورة');
+});
+
+document.getElementById('clearAllGalleryBtn').addEventListener('click', () => {
+  if (!confirm('هل تريد حذف جميع صور المعرض؟')) return;
+  localStorage.removeItem('jarrebni_gallery');
+  renderAdminGallery();
+  showToast('✓ تم مسح المعرض');
+});
+
+function renderAdminGallery() {
+  const grid  = document.getElementById('adminGalleryGrid');
+  const empty = document.getElementById('galleryAdminEmpty');
+  const photos = JARREBNI.getGallery();
+  grid.innerHTML = '';
+  if (photos.length === 0) {
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  photos.forEach(ph => {
+    const item = document.createElement('div');
+    item.className = 'admin-gallery-item';
+    item.innerHTML = `
+      <img src="${ph.image}" alt="${ph.caption || ''}">
+      ${ph.caption ? `<p class="admin-gallery-caption">${ph.caption}</p>` : ''}
+      <button class="btn-delete-gallery" data-id="${ph.id}">🗑️ حذف</button>
+    `;
+    grid.appendChild(item);
+  });
+  grid.querySelectorAll('.btn-delete-gallery').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!confirm('حذف هذه الصورة؟')) return;
+      JARREBNI.deleteGalleryPhoto(btn.dataset.id);
+      renderAdminGallery();
+      showToast('✓ تم حذف الصورة');
+    });
+  });
 }
 
 // ===== REVIEWS =====

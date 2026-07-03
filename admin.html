@@ -45,6 +45,7 @@
         <button class="nav-item active" data-section="products">🛒 المنتجات</button>
         <button class="nav-item" data-section="orders">📋 الطلبات <span class="orders-badge hidden" id="navOrdersBadge">0</span></button>
         <button class="nav-item" data-section="reviews">⭐ التقييمات <span class="orders-badge hidden" id="navReviewsBadge">0</span></button>
+        <button class="nav-item" data-section="gallery">📸 المعرض</button>
         <button class="nav-item" data-section="settings">⚙️ الإعدادات</button>
         <a href="shop.html" class="nav-item nav-link" target="_blank">🌐 الموقع</a>
       </nav>
@@ -124,6 +125,10 @@
             <span id="statOrdersTotal">0</span>
             <label>📋 الإجمالي</label>
           </div>
+          <div class="admin-stat-box" style="border-top:3px solid #4CAF50">
+            <span id="statOrdersRevenue">0 دت</span>
+            <label>💰 رقم الأعمال</label>
+          </div>
         </div>
 
         <div id="ordersContainer">
@@ -133,6 +138,44 @@
             <p style="opacity:.6;font-size:.9rem">ستظهر الطلبات هنا عند إرسالها من الموقع</p>
           </div>
           <div id="ordersList"></div>
+        </div>
+      </div>
+
+      <!-- GALLERY SECTION -->
+      <div class="admin-section hidden" id="gallerySection">
+        <div class="admin-header">
+          <div>
+            <h1>📸 المعرض</h1>
+            <p class="admin-sub">صور مخزونك وتوصيلاتك — تظهر في الموقع للزبائن</p>
+          </div>
+          <div class="orders-header-actions">
+            <button class="btn-clear-orders" id="clearAllGalleryBtn">🗑️ مسح الكل</button>
+          </div>
+        </div>
+
+        <!-- Upload card -->
+        <div class="gallery-upload-card">
+          <h3>➕ إضافة صورة جديدة</h3>
+          <div class="gallery-upload-area" id="galleryUploadArea">
+            <span>📷</span>
+            <p>انقر لاختيار صورة</p>
+            <input type="file" id="galleryFileInput" accept="image/*" />
+          </div>
+          <div class="form-group" style="margin-top:14px">
+            <label>تعليق (اختياري)</label>
+            <input type="text" id="galleryCaptionInput" placeholder="مثال: توصيل اليوم في بنزرت 🚛" />
+          </div>
+          <button class="btn-save-settings" id="addGalleryPhotoBtn" style="margin-top:12px">💾 إضافة الصورة</button>
+          <div class="gallery-preview-wrap hidden" id="galleryPreviewWrap">
+            <img id="galleryPreviewImg" src="" alt="preview" />
+          </div>
+        </div>
+
+        <!-- Photos grid -->
+        <div id="adminGalleryGrid" class="admin-gallery-grid"></div>
+        <div class="orders-empty hidden" id="galleryAdminEmpty">
+          <p style="font-size:3rem">📸</p>
+          <p>لا توجد صور بعد</p>
         </div>
       </div>
 
@@ -192,6 +235,11 @@
               <label>نص البانر الترويجي 🔥</label>
               <input type="text" id="settingPromo" placeholder="عرض الأسبوع: توصيل مجاني..." />
               <small>يظهر في الشريط الأخضر أعلى الموقع</small>
+            </div>
+            <div class="form-group">
+              <label>🕐 ساعات العمل</label>
+              <textarea id="settingHours" rows="3" placeholder="السبت - الخميس: 8:00ص - 8:00م&#10;الجمعة: مغلق"></textarea>
+              <small>تظهر في قسم "تواصل معنا" بالموقع</small>
             </div>
           </div>
           <div class="settings-card">

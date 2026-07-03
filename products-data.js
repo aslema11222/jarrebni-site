@@ -5,6 +5,7 @@ const JARREBNI = (() => {
     SETTINGS: 'jarrebni_settings',
     ORDERS:   'jarrebni_orders',
     REVIEWS:  'jarrebni_reviews',
+    GALLERY:  'jarrebni_gallery',
     AUTH:     'jarrebni_auth'
   };
 
@@ -35,7 +36,8 @@ const JARREBNI = (() => {
     phone:     '+216 XX XXX XXX',
     whatsapp:  '216XXXXXXXX',
     password:  'jarrebni2025',
-    promoText: '🔥 عرض الأسبوع: توصيل مجاني في بنزرت الشمالية!'
+    promoText: '🔥 عرض الأسبوع: توصيل مجاني في بنزرت الشمالية!',
+    hours:     'السبت - الخميس: 8:00ص - 8:00م\nالجمعة: مغلق'
   };
 
   function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
@@ -109,6 +111,21 @@ const JARREBNI = (() => {
     deleteReview(id) {
       const reviews = this.getReviews().filter(r => r.id !== id);
       localStorage.setItem(KEYS.REVIEWS, JSON.stringify(reviews));
+    },
+    getGallery() {
+      try {
+        const s = localStorage.getItem(KEYS.GALLERY);
+        return s ? JSON.parse(s) : [];
+      } catch { return []; }
+    },
+    saveGalleryPhoto(photo) {
+      const gallery = this.getGallery();
+      gallery.unshift(photo);
+      localStorage.setItem(KEYS.GALLERY, JSON.stringify(gallery));
+    },
+    deleteGalleryPhoto(id) {
+      const gallery = this.getGallery().filter(p => p.id !== id);
+      localStorage.setItem(KEYS.GALLERY, JSON.stringify(gallery));
     }
   };
 })();

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initReveal();
   initPromoBar();
   initReviews();
+  renderGallery();
 });
 
 // ===== SETTINGS (phone / whatsapp from localStorage) =====
@@ -19,6 +20,10 @@ function loadSettings() {
   if (s.promoText) {
     const el = document.getElementById('promoText');
     if (el) el.textContent = s.promoText;
+  }
+  if (s.hours) {
+    const el = document.getElementById('hoursDisplay');
+    if (el) el.innerHTML = s.hours.replace(/\n/g, '<br>');
   }
 }
 
@@ -68,6 +73,7 @@ function renderProducts() {
 function renderGrid(gridId, items) {
   const grid = document.getElementById(gridId);
   grid.innerHTML = '';
+  const waNum = JARREBNI.getSettings().whatsapp;
   items.forEach(p => {
     const card = document.createElement('div');
     card.className = 'product-card';
@@ -76,9 +82,12 @@ function renderGrid(gridId, items) {
       : `<div class="product-emoji">${p.emoji}</div>`;
     const addLabel  = (typeof t === 'function') ? t('btn.add')   : '+ أضف';
     const doneLabel = (typeof t === 'function') ? t('btn.added') : '✓ تمت';
+    const waLabel   = (typeof t === 'function') ? t('btn.wa')    : '💬 واتساب';
     const pName = (typeof t === 'function') ? (t(`product.${p.id}.name`) !== `product.${p.id}.name` ? t(`product.${p.id}.name`) : p.name) : p.name;
     const pDesc = (typeof t === 'function') ? (t(`product.${p.id}.desc`) !== `product.${p.id}.desc` ? t(`product.${p.id}.desc`) : p.desc) : p.desc;
     const pUnit = (typeof translateUnit === 'function') ? translateUnit(p.unit) : p.unit;
+    const waMsg = encodeURIComponent(`مرحباً جربني! أريد طلب: ${p.name} (${p.price} دت/${p.unit})`);
+    const waHref = waNum && waNum !== '216XXXXXXXX' ? `https://wa.me/${waNum}?text=${waMsg}` : '#';
     card.innerHTML = `
       ${thumb}
       <h3>${pName}</h3>
@@ -87,6 +96,7 @@ function renderGrid(gridId, items) {
         <span class="price">${p.price} دت/${pUnit}</span>
         <button class="btn-add">${addLabel}</button>
       </div>
+      <a class="btn-wa-product" href="${waHref}" target="_blank">${waLabel}</a>
     `;
     card.querySelector('.btn-add').addEventListener('click', (e) => {
       addToCart(p);
@@ -212,6 +222,8 @@ document.getElementById('orderForm').addEventListener('submit', (e) => {
   const products = document.getElementById('orderProducts').value.trim();
   const notes    = document.getElementById('orderNotes').value.trim();
 
+  const orderTotal = Object.values(cart).reduce((sum, {product: p, qty}) =>
+    sum + parseFloat(p.price) * qty, 0).toFixed(2);
   const order = {
     id:       'ORD-' + Date.now(),
     date:     new Date().toLocaleString('ar-TN'),
@@ -220,6 +232,7 @@ document.getElementById('orderForm').addEventListener('submit', (e) => {
     address,
     products,
     notes,
+    total:    orderTotal,
     status:   'new'
   };
   JARREBNI.saveOrder(order);
@@ -371,6 +384,26 @@ function renderReviews() {
       </div>`;
   }).join('');
   initReveal();
+}
+
+// ===== GALLERY =====
+function renderGallery() {
+  const grid = document.getElementById('galleryGrid');
+  if (!grid) return;
+  const photos = JARREBNI.getGallery();
+  const empty  = document.getElementById('galleryEmpty');
+  if (photos.length === 0) {
+    if (empty) empty.style.display = 'block';
+    grid.innerHTML = '';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  grid.innerHTML = photos.map(ph => `
+    <div class="gallery-item">
+      <img src="${ph.image}" alt="${ph.caption || ''}">
+      ${ph.caption ? `<div class="gallery-caption">${ph.caption}</div>` : ''}
+    </div>
+  `).join('');
 }
 
 // ===== ACTIVE NAV HIGHLIGHT =====
