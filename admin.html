@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم - جربني</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍊</text></svg>" />
+  <link rel="stylesheet" href="admin.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">🍊🍎🍌<br/><span>جربني</span></div>
+      <h2>لوحة التحكم</h2>
+      <p class="login-sub">أدخل كلمة المرور للمتابعة</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <input type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <p class="login-error hidden" id="loginError">كلمة المرور غير صحيحة ❌</p>
+        <button type="submit" class="btn-login">دخول →</button>
+      </form>
+      <a href="login.html" class="back-link">← العودة إلى الصفحة الرئيسية</a>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div class="admin-dashboard hidden" id="dashboard">
+
+    <!-- Mobile top bar -->
+    <div class="mobile-topbar">
+      <div class="mobile-logo">🍊 <span>جربني</span></div>
+      <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">🍊 <span>جربني</span></div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-section="products">🛒 المنتجات</button>
+        <button class="nav-item" data-section="orders">📋 الطلبات <span class="orders-badge hidden" id="navOrdersBadge">0</span></button>
+        <button class="nav-item" data-section="settings">⚙️ الإعدادات</button>
+        <a href="index.html" class="nav-item nav-link" target="_blank">🌐 الموقع</a>
+      </nav>
+      <button class="sidebar-logout" id="logoutBtn">🚪 تسجيل الخروج</button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+
+      <!-- PRODUCTS SECTION -->
+      <div class="admin-section" id="productsSection">
+        <div class="admin-header">
+          <div>
+            <h1>إدارة المنتجات</h1>
+            <p class="admin-sub">انقر على أي منتج لتعديله</p>
+          </div>
+          <button class="btn-add-product" id="addProductBtn">+ إضافة منتج</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="admin-stats-row">
+          <div class="admin-stat-box">
+            <span id="statFruits">0</span>
+            <label>🍊 فاكهة</label>
+          </div>
+          <div class="admin-stat-box">
+            <span id="statVeggies">0</span>
+            <label>🥦 خضروات</label>
+          </div>
+          <div class="admin-stat-box accent">
+            <span id="statTotal">0</span>
+            <label>📦 إجمالي</label>
+          </div>
+        </div>
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="fruits">🍊 الفواكه</button>
+          <button class="admin-tab" data-tab="veggies">🥦 الخضروات</button>
+        </div>
+        <div class="admin-products-grid" id="adminFruitsGrid"></div>
+        <div class="admin-products-grid hidden" id="adminVeggiesGrid"></div>
+      </div>
+
+      <!-- ORDERS SECTION -->
+      <div class="admin-section hidden" id="ordersSection">
+        <div class="admin-header">
+          <div>
+            <h1>الطلبات</h1>
+            <p class="admin-sub">جميع طلبات العملاء مرتبة من الأحدث إلى الأقدم</p>
+          </div>
+          <div class="orders-header-actions">
+            <select id="ordersFilterStatus" class="orders-filter">
+              <option value="all">كل الطلبات</option>
+              <option value="new">🆕 جديد</option>
+              <option value="confirmed">✅ مؤكد</option>
+              <option value="delivered">📦 تم التوصيل</option>
+              <option value="cancelled">❌ ملغى</option>
+            </select>
+            <button class="btn-clear-orders" id="clearAllOrdersBtn">🗑️ مسح الكل</button>
+          </div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="admin-stats-row">
+          <div class="admin-stat-box">
+            <span id="statOrdersNew">0</span>
+            <label>🆕 جديد</label>
+          </div>
+          <div class="admin-stat-box">
+            <span id="statOrdersConfirmed">0</span>
+            <label>✅ مؤكد</label>
+          </div>
+          <div class="admin-stat-box">
+            <span id="statOrdersDelivered">0</span>
+            <label>📦 موصّل</label>
+          </div>
+          <div class="admin-stat-box accent">
+            <span id="statOrdersTotal">0</span>
+            <label>📋 الإجمالي</label>
+          </div>
+        </div>
+
+        <div id="ordersContainer">
+          <div class="orders-empty" id="ordersEmpty">
+            <p style="font-size:3rem">📋</p>
+            <p>لا توجد طلبات بعد</p>
+            <p style="opacity:.6;font-size:.9rem">ستظهر الطلبات هنا عند إرسالها من الموقع</p>
+          </div>
+          <div id="ordersList"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS SECTION -->
+      <div class="admin-section hidden" id="settingsSection">
+        <div class="admin-header">
+          <div>
+            <h1>الإعدادات</h1>
+            <p class="admin-sub">إعدادات الموقع ومعلومات التواصل</p>
+          </div>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>📞 معلومات التواصل</h3>
+            <div class="form-group">
+              <label>رقم الهاتف</label>
+              <input type="tel" id="settingPhone" placeholder="0X XX XX XX XX" />
+            </div>
+            <div class="form-group">
+              <label>رقم واتساب (بدون + أو 00)</label>
+              <input type="text" id="settingWhatsapp" placeholder="216XXXXXXXXX" />
+              <small>مثال: 21694123456</small>
+            </div>
+            <div class="form-group">
+              <label>نص البانر الترويجي 🔥</label>
+              <input type="text" id="settingPromo" placeholder="عرض الأسبوع: توصيل مجاني..." />
+              <small>يظهر في الشريط الأخضر أعلى الموقع</small>
+            </div>
+          </div>
+          <div class="settings-card">
+            <h3>🔒 تغيير كلمة المرور</h3>
+            <div class="form-group">
+              <label>كلمة المرور الجديدة</label>
+              <input type="password" id="newPassword" placeholder="6 أحرف على الأقل" />
+            </div>
+            <div class="form-group">
+              <label>تأكيد كلمة المرور</label>
+              <input type="password" id="confirmPassword" placeholder="أعد الكتابة" />
+            </div>
+          </div>
+        </div>
+        <div class="settings-actions">
+          <button class="btn-save-settings" id="saveSettingsBtn">💾 حفظ الإعدادات</button>
+          <button class="btn-reset-products" id="resetProductsBtn">🔄 إعادة تعيين المنتجات</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===== EDIT / ADD MODAL ===== -->
+  <div class="modal-overlay hidden" id="editModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modalTitle">تعديل المنتج</h2>
+        <button class="modal-close" id="modalClose" title="إغلاق">×</button>
+      </div>
+
+      <!-- Image -->
+      <div class="image-section">
+        <div class="image-preview" id="imagePreview">
+          <span id="previewEmoji">🍊</span>
+          <img id="previewImg" src="" alt="" class="hidden" />
+        </div>
+        <div class="image-actions">
+          <label class="btn-upload">
+            📷 رفع صورة من جهازك
+            <input type="file" id="imageUpload" accept="image/*" />
+          </label>
+          <button class="btn-use-emoji" id="removeImageBtn">استخدام الرمز بدل الصورة</button>
+          <small class="img-hint">الصورة تُحفظ محلياً في المتصفح</small>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="modal-form">
+        <input type="hidden" id="editId" />
+        <input type="hidden" id="editCategory" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>اسم المنتج *</label>
+            <input type="text" id="editName" placeholder="مثال: برتقال طازج" />
+          </div>
+          <div class="form-group">
+            <label>الرمز (Emoji)</label>
+            <input type="text" id="editEmoji" maxlength="2" placeholder="🍊" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>الوصف</label>
+          <input type="text" id="editDesc" placeholder="وصف قصير للمنتج" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>السعر (دت) *</label>
+            <input type="number" id="editPrice" min="0" placeholder="1.5" />
+          </div>
+          <div class="form-group">
+            <label>الوحدة</label>
+            <input type="text" id="editUnit" placeholder="كغ / حبة / علبة" />
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-save" id="saveProductBtn">💾 حفظ</button>
+        <button class="btn-delete hidden" id="deleteProductBtn">🗑️ حذف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="admin-toast" id="adminToast"></div>
+
+  <script src="products-data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

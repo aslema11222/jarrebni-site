@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(run)",
+      "Skill(run:*)",
+      "PowerShell(Start-Process \"c:\\\\Users\\\\Asus\\\\OneDrive\\\\Documents\\\\Bureau\\\\SITE  FRUIT JARREBNI\\\\index.html\")",
+      "PowerShell(Start-Process \"chrome.exe\" -ArgumentList '\"c:\\\\Users\\\\Asus\\\\OneDrive\\\\Documents\\\\Bureau\\\\SITE  FRUIT JARREBNI\\\\index.html\"')",
+      "PowerShell(Invoke-Item \"c:\\\\Users\\\\Asus\\\\OneDrive\\\\Documents\\\\Bureau\\\\SITE  FRUIT JARREBNI\\\\index.html\")",
+      "PowerShell([System.Diagnostics.Process]::Start\\(\"c:\\\\Users\\\\Asus\\\\OneDrive\\\\Documents\\\\Bureau\\\\SITE  FRUIT JARREBNI\\\\index.html\"\\))",
+      "PowerShell(Start-Process \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" -ArgumentList \"https://app.netlify.com/drop\")",
+      "PowerShell(Start-Process \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" -ArgumentList \"https://app.netlify.com/projects/sparkly-centaur-f4526b/overview\")",
+      "PowerShell(& \"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" \"c:\\\\Users\\\\Asus\\\\OneDrive\\\\Documents\\\\Bureau\\\\SITE  FRUIT JARREBNI\\\\login.html\")"
+    ]
+  }
+}
