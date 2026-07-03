@@ -469,7 +469,6 @@ document.getElementById('galleryFileInput').addEventListener('change', (e) => {
   btn.disabled = true;
   btn.textContent = '⏳ جاري التحميل...';
   wrap.classList.remove('hidden');
-  thumbs.innerHTML = '';
 
   let loaded = 0;
   files.forEach((file) => {
@@ -488,6 +487,14 @@ document.getElementById('galleryFileInput').addEventListener('change', (e) => {
     reader.readAsDataURL(file);
   });
   document.getElementById('galleryFileInput').value = '';
+});
+
+document.getElementById('clearPendingBtn').addEventListener('click', () => {
+  pendingGalleryImages = [];
+  document.getElementById('galleryPreviewThumbs').innerHTML = '';
+  document.getElementById('galleryPreviewWrap').classList.add('hidden');
+  document.getElementById('addGalleryPhotoBtn').textContent = '💾 إضافة الصور';
+  document.getElementById('addGalleryPhotoBtn').disabled = false;
 });
 
 document.getElementById('addGalleryPhotoBtn').addEventListener('click', () => {
