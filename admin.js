@@ -17,6 +17,7 @@ function showDashboard() {
   loadSettingsForm();
   updateStats();
   updateOrdersBadge();
+  updateReviewsBadge();
 }
 
 document.getElementById('loginForm').addEventListener('submit', (e) => {
@@ -57,8 +58,10 @@ document.querySelectorAll('.nav-item[data-section]').forEach(item => {
     const sec = item.dataset.section;
     document.getElementById('productsSection').classList.toggle('hidden', sec !== 'products');
     document.getElementById('ordersSection').classList.toggle('hidden', sec !== 'orders');
+    document.getElementById('reviewsSection').classList.toggle('hidden', sec !== 'reviews');
     document.getElementById('settingsSection').classList.toggle('hidden', sec !== 'settings');
-    if (sec === 'orders') renderOrders();
+    if (sec === 'orders')  renderOrders();
+    if (sec === 'reviews') renderAdminReviews();
     closeSidebar();
   });
 });
@@ -403,6 +406,73 @@ function updateOrdersBadge() {
   badge.textContent = newCount;
   badge.classList.toggle('hidden', newCount === 0);
 }
+
+// ===== REVIEWS =====
+function renderAdminReviews() {
+  const reviews = JARREBNI.getReviews();
+  const empty   = document.getElementById('reviewsEmpty');
+  const list    = document.getElementById('adminReviewsList');
+  list.innerHTML = '';
+
+  const total = reviews.length;
+  const avg   = total > 0
+    ? (reviews.reduce((s, r) => s + r.rating, 0) / total).toFixed(1)
+    : '—';
+  document.getElementById('statReviewsTotal').textContent = total;
+  document.getElementById('statReviewsAvg').textContent   = avg !== '—' ? avg + ' ★' : '—';
+
+  if (total === 0) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  reviews.forEach(r => {
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    const initials = r.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'order-card';
+    card.innerHTML = `
+      <div class="order-card-header">
+        <div class="order-id-date">
+          <span class="order-id">${r.id}</span>
+          <span class="order-date">🕐 ${r.date}</span>
+        </div>
+        <span class="order-status-badge" style="background:#F5A034;font-size:1rem;letter-spacing:2px">${stars}</span>
+      </div>
+      <div class="order-client-info">
+        <span>👤 ${r.name}</span>
+      </div>
+      <div class="order-products-text">💬 "${r.text}"</div>
+      <div class="order-card-actions">
+        <button class="btn-delete-order btn-delete-review" data-id="${r.id}">🗑️ حذف</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+
+  list.querySelectorAll('.btn-delete-review').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!confirm('هل تريد حذف هذا التقييم؟')) return;
+      JARREBNI.deleteReview(btn.dataset.id);
+      renderAdminReviews();
+      updateReviewsBadge();
+      showToast('✓ تم حذف التقييم');
+    });
+  });
+}
+
+function updateReviewsBadge() {
+  const count = JARREBNI.getReviews().length;
+  const badge = document.getElementById('navReviewsBadge');
+  badge.textContent = count;
+  badge.classList.toggle('hidden', count === 0);
+}
+
+document.getElementById('clearAllReviewsBtn').addEventListener('click', () => {
+  if (!confirm('هل تريد حذف جميع التقييمات نهائياً؟')) return;
+  localStorage.removeItem('jarrebni_reviews');
+  renderAdminReviews();
+  updateReviewsBadge();
+  showToast('✓ تم مسح جميع التقييمات');
+});
 
 // ===== TOAST =====
 let toastTimer;

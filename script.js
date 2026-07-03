@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProducts();
   initReveal();
   initPromoBar();
+  initReviews();
 });
 
 // ===== SETTINGS (phone / whatsapp from localStorage) =====
@@ -269,6 +270,108 @@ const revealObserver = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.1 });
+
+// ===== REVIEWS =====
+let selectedRating = 0;
+
+function initReviews() {
+  // Star picker
+  const starsInput = document.getElementById('starsInput');
+  if (!starsInput) return;
+
+  starsInput.querySelectorAll('span').forEach(star => {
+    star.addEventListener('mouseover', () => highlightStars(parseInt(star.dataset.val)));
+    star.addEventListener('mouseout',  () => highlightStars(selectedRating));
+    star.addEventListener('click',     () => {
+      selectedRating = parseInt(star.dataset.val);
+      highlightStars(selectedRating);
+      const hint = document.getElementById('ratingHint');
+      if (hint) hint.textContent = '★'.repeat(selectedRating) + ' ' + getRatingLabel(selectedRating);
+    });
+  });
+
+  // Form submit
+  document.getElementById('reviewForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (selectedRating === 0) {
+      showToast(typeof t === 'function' ? t('review.error.rating') : 'اختر عدد النجوم');
+      return;
+    }
+    const name = document.getElementById('reviewName').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    const review = {
+      id:     'REV-' + Date.now(),
+      date:   new Date().toLocaleString('ar-TN'),
+      name,
+      text,
+      rating: selectedRating
+    };
+    JARREBNI.saveReview(review);
+    renderReviews();
+
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = typeof t === 'function' ? t('review.sent') : '✓ شكراً!';
+    btn.style.background = 'var(--green)';
+    btn.disabled = true;
+    showToast(typeof t === 'function' ? t('review.toast') : '✓ تم إرسال تقييمك!');
+    setTimeout(() => {
+      btn.textContent = typeof t === 'function' ? t('review.form.submit') : '⭐ أرسل تقييمي';
+      btn.style.background = '';
+      btn.disabled = false;
+      e.target.reset();
+      selectedRating = 0;
+      highlightStars(0);
+      const hint = document.getElementById('ratingHint');
+      if (hint) hint.textContent = typeof t === 'function' ? t('review.form.rating.hint') : 'انقر على النجوم';
+    }, 2500);
+  });
+
+  renderReviews();
+}
+
+function highlightStars(count) {
+  document.querySelectorAll('#starsInput span').forEach((s, i) => {
+    s.classList.toggle('active', i < count);
+  });
+}
+
+function getRatingLabel(n) {
+  const labels = ['','ضعيف','مقبول','جيد','جيد جداً','ممتاز'];
+  if (typeof t === 'function') {
+    const key = 'review.label.' + n;
+    const translated = t(key);
+    return translated !== key ? translated : labels[n];
+  }
+  return labels[n];
+}
+
+function renderReviews() {
+  const list = document.getElementById('reviewsList');
+  if (!list) return;
+  const reviews = JARREBNI.getReviews();
+  if (reviews.length === 0) {
+    const emptyMsg = typeof t === 'function' ? t('review.empty') : 'لا توجد تقييمات بعد. كن أول من يقيّم!';
+    list.innerHTML = `<p class="reviews-empty">${emptyMsg}</p>`;
+    return;
+  }
+  list.innerHTML = reviews.map(r => {
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    const initials = r.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    return `
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-avatar">${initials}</div>
+          <div class="review-meta">
+            <strong>${r.name}</strong>
+            <span class="review-date">${r.date}</span>
+          </div>
+          <div class="review-stars">${stars}</div>
+        </div>
+        <p class="review-text">"${r.text}"</p>
+      </div>`;
+  }).join('');
+  initReveal();
+}
 
 // ===== ACTIVE NAV HIGHLIGHT =====
 const sections  = document.querySelectorAll('section[id]');

@@ -19,7 +19,7 @@ const TRANSLATIONS = {
       'auth.submit':'دخول','auth.hint':'كلمة المرور الافتراضية: <code>jarrebni2025</code>',
       'back':'→ رجوع',
       'nav.home':'الرئيسية','nav.products':'منتجاتنا','nav.whyus':'لماذا جربني',
-      'nav.order':'اطلب الآن','nav.contact':'تواصل معنا',
+      'nav.order':'اطلب الآن','nav.reviews':'التقييمات','nav.contact':'تواصل معنا',
       'hero.tag':'🚚 توصيل سريع إلى باب منزلك',
       'hero.btn.order':'اطلب الآن','hero.btn.browse':'تصفح المنتجات',
       'products.tag':'منتجاتنا','products.title':'أطيب المنتجات الطازجة',
@@ -68,6 +68,17 @@ const TRANSLATIONS = {
       'settings.lang.title':'اللغة / Langue / Language',
       'settings.lang.desc':'اختر لغة عرض الموقع',
       'settings.save':'💾 حفظ','settings.saved':'✓ تم الحفظ!',
+      // Reviews
+      'reviews.tag':'التقييمات','reviews.title':'شارك تجربتك معنا','reviews.desc':'رأيك يهمنا ويساعد الآخرين على الاختيار',
+      'review.form.title':'✍️ أضف تقييمك',
+      'review.form.name':'اسمك','review.form.name.ph':'أدخل اسمك',
+      'review.form.rating':'التقييم','review.form.rating.hint':'انقر على النجوم',
+      'review.form.text':'تعليقك','review.form.text.ph':'شارك تجربتك مع جربني...',
+      'review.form.submit':'⭐ أرسل تقييمي',
+      'review.sent':'✓ شكراً!','review.toast':'✓ تم إرسال تقييمك!',
+      'review.empty':'لا توجد تقييمات بعد. كن أول من يقيّم!',
+      'review.error.rating':'يرجى اختيار عدد النجوم',
+      'review.label.1':'ضعيف','review.label.2':'مقبول','review.label.3':'جيد','review.label.4':'جيد جداً','review.label.5':'ممتاز',
       // Units
       'unit.كغ':'كغ','unit.حبة':'حبة','unit.علبة':'علبة',
       // Fruits
@@ -108,7 +119,7 @@ const TRANSLATIONS = {
       'auth.submit':'Connexion','auth.hint':'Mot de passe par défaut: <code>jarrebni2025</code>',
       'back':'← Retour',
       'nav.home':'Accueil','nav.products':'Produits','nav.whyus':'Pourquoi nous',
-      'nav.order':'Commander','nav.contact':'Contact',
+      'nav.order':'Commander','nav.reviews':'Avis','nav.contact':'Contact',
       'hero.tag':'🚚 Livraison rapide à votre porte',
       'hero.btn.order':'Commander','hero.btn.browse':'Voir les produits',
       'products.tag':'Nos produits','products.title':'Nos meilleurs produits frais',
@@ -157,6 +168,17 @@ const TRANSLATIONS = {
       'settings.lang.title':'اللغة / Langue / Language',
       'settings.lang.desc':'Choisissez la langue d\'affichage',
       'settings.save':'💾 Enregistrer','settings.saved':'✓ Enregistré!',
+      // Reviews
+      'reviews.tag':'Avis','reviews.title':'Partagez votre expérience','reviews.desc':'Votre avis nous aide et aide les autres à choisir',
+      'review.form.title':'✍️ Ajouter un avis',
+      'review.form.name':'Votre nom','review.form.name.ph':'Entrez votre nom',
+      'review.form.rating':'Note','review.form.rating.hint':'Cliquez sur les étoiles',
+      'review.form.text':'Votre commentaire','review.form.text.ph':'Partagez votre expérience avec Jarrebni...',
+      'review.form.submit':'⭐ Envoyer mon avis',
+      'review.sent':'✓ Merci!','review.toast':'✓ Votre avis a été envoyé!',
+      'review.empty':'Pas encore d\'avis. Soyez le premier à donner votre avis!',
+      'review.error.rating':'Veuillez choisir une note',
+      'review.label.1':'Mauvais','review.label.2':'Passable','review.label.3':'Bien','review.label.4':'Très bien','review.label.5':'Excellent',
       // Units
       'unit.كغ':'kg','unit.حبة':'pièce','unit.علبة':'boîte',
       // Fruits
@@ -197,7 +219,7 @@ const TRANSLATIONS = {
       'auth.submit':'Login','auth.hint':'Default password: <code>jarrebni2025</code>',
       'back':'← Back',
       'nav.home':'Home','nav.products':'Products','nav.whyus':'Why us',
-      'nav.order':'Order now','nav.contact':'Contact',
+      'nav.order':'Order now','nav.reviews':'Reviews','nav.contact':'Contact',
       'hero.tag':'🚚 Fast delivery to your door',
       'hero.btn.order':'Order now','hero.btn.browse':'Browse products',
       'products.tag':'Our products','products.title':'Our best fresh products',
@@ -246,6 +268,17 @@ const TRANSLATIONS = {
       'settings.lang.title':'اللغة / Langue / Language',
       'settings.lang.desc':'Choose the display language',
       'settings.save':'💾 Save','settings.saved':'✓ Saved!',
+      // Reviews
+      'reviews.tag':'Reviews','reviews.title':'Share your experience','reviews.desc':'Your feedback helps us and others choose',
+      'review.form.title':'✍️ Add your review',
+      'review.form.name':'Your name','review.form.name.ph':'Enter your name',
+      'review.form.rating':'Rating','review.form.rating.hint':'Click on the stars',
+      'review.form.text':'Your comment','review.form.text.ph':'Share your experience with Jarrebni...',
+      'review.form.submit':'⭐ Send my review',
+      'review.sent':'✓ Thank you!','review.toast':'✓ Your review has been sent!',
+      'review.empty':'No reviews yet. Be the first to review!',
+      'review.error.rating':'Please choose a star rating',
+      'review.label.1':'Poor','review.label.2':'Fair','review.label.3':'Good','review.label.4':'Very good','review.label.5':'Excellent',
       // Units
       'unit.كغ':'kg','unit.حبة':'piece','unit.علبة':'box',
       // Fruits
@@ -298,8 +331,9 @@ function applyLang(code) {
     if (L.t[key] !== undefined) el.placeholder = L.t[key];
   });
 
-  // Re-render product grids if renderProducts exists (shop page)
+  // Re-render product grids and reviews if on shop page
   if (typeof renderProducts === 'function') renderProducts();
+  if (typeof renderReviews  === 'function') renderReviews();
 }
 
 document.addEventListener('DOMContentLoaded', () => applyLang(getLang()));

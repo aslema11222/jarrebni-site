@@ -44,6 +44,7 @@
       <nav class="sidebar-nav">
         <button class="nav-item active" data-section="products">🛒 المنتجات</button>
         <button class="nav-item" data-section="orders">📋 الطلبات <span class="orders-badge hidden" id="navOrdersBadge">0</span></button>
+        <button class="nav-item" data-section="reviews">⭐ التقييمات <span class="orders-badge hidden" id="navReviewsBadge">0</span></button>
         <button class="nav-item" data-section="settings">⚙️ الإعدادات</button>
         <a href="shop.html" class="nav-item nav-link" target="_blank">🌐 الموقع</a>
       </nav>
@@ -132,6 +133,38 @@
             <p style="opacity:.6;font-size:.9rem">ستظهر الطلبات هنا عند إرسالها من الموقع</p>
           </div>
           <div id="ordersList"></div>
+        </div>
+      </div>
+
+      <!-- REVIEWS SECTION -->
+      <div class="admin-section hidden" id="reviewsSection">
+        <div class="admin-header">
+          <div>
+            <h1>⭐ التقييمات</h1>
+            <p class="admin-sub">تقييمات العملاء الحقيقية — يمكنك حذف أي تقييم غير لائق</p>
+          </div>
+          <div class="orders-header-actions">
+            <button class="btn-clear-orders" id="clearAllReviewsBtn">🗑️ مسح الكل</button>
+          </div>
+        </div>
+        <!-- Stats -->
+        <div class="admin-stats-row">
+          <div class="admin-stat-box">
+            <span id="statReviewsTotal">0</span>
+            <label>⭐ تقييم</label>
+          </div>
+          <div class="admin-stat-box accent">
+            <span id="statReviewsAvg">—</span>
+            <label>📊 المعدل</label>
+          </div>
+        </div>
+        <div id="adminReviewsContainer">
+          <div class="orders-empty" id="reviewsEmpty">
+            <p style="font-size:3rem">⭐</p>
+            <p>لا توجد تقييمات بعد</p>
+            <p style="opacity:.6;font-size:.9rem">ستظهر تقييمات العملاء هنا</p>
+          </div>
+          <div id="adminReviewsList"></div>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ const JARREBNI = (() => {
     PRODUCTS: 'jarrebni_products',
     SETTINGS: 'jarrebni_settings',
     ORDERS:   'jarrebni_orders',
+    REVIEWS:  'jarrebni_reviews',
     AUTH:     'jarrebni_auth'
   };
 
@@ -93,6 +94,21 @@ const JARREBNI = (() => {
     deleteOrder(id) {
       const orders = this.getOrders().filter(o => o.id !== id);
       localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
+    },
+    getReviews() {
+      try {
+        const s = localStorage.getItem(KEYS.REVIEWS);
+        return s ? JSON.parse(s) : [];
+      } catch { return []; }
+    },
+    saveReview(review) {
+      const reviews = this.getReviews();
+      reviews.unshift(review);
+      localStorage.setItem(KEYS.REVIEWS, JSON.stringify(reviews));
+    },
+    deleteReview(id) {
+      const reviews = this.getReviews().filter(r => r.id !== id);
+      localStorage.setItem(KEYS.REVIEWS, JSON.stringify(reviews));
     }
   };
 })();

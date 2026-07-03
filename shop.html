@@ -36,6 +36,7 @@
         <a href="#products" data-i18n="nav.products">منتجاتنا</a>
         <a href="#why-us"   data-i18n="nav.whyus">لماذا جربني</a>
         <a href="#order"    data-i18n="nav.order">اطلب الآن</a>
+        <a href="#reviews"  data-i18n="nav.reviews">التقييمات</a>
         <a href="#contact"  data-i18n="nav.contact">تواصل معنا</a>
         <a href="settings.html" title="Settings / Paramètres / الإعدادات" style="font-size:1.2rem;">⚙️</a>
       </nav>
@@ -169,6 +170,47 @@
     </div>
   </section>
 
+  <!-- ===== CUSTOMER REVIEWS ===== -->
+  <section class="reviews-section" id="reviews">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-i18n="reviews.tag">التقييمات</span>
+        <h2 data-i18n="reviews.title">شارك تجربتك معنا</h2>
+        <p data-i18n="reviews.desc">رأيك يهمنا ويساعد الآخرين على الاختيار</p>
+      </div>
+
+      <!-- Review Form -->
+      <div class="review-form-card">
+        <h3 data-i18n="review.form.title">✍️ أضف تقييمك</h3>
+        <form id="reviewForm">
+          <div class="form-group">
+            <label data-i18n="review.form.name">اسمك</label>
+            <input type="text" id="reviewName" data-i18n-ph="review.form.name.ph" placeholder="أدخل اسمك" required />
+          </div>
+          <div class="star-picker-group">
+            <label data-i18n="review.form.rating">التقييم</label>
+            <div class="stars-input" id="starsInput" data-rating="0">
+              <span data-val="1">★</span>
+              <span data-val="2">★</span>
+              <span data-val="3">★</span>
+              <span data-val="4">★</span>
+              <span data-val="5">★</span>
+            </div>
+            <span class="rating-hint" id="ratingHint" data-i18n="review.form.rating.hint">انقر على النجوم</span>
+          </div>
+          <div class="form-group">
+            <label data-i18n="review.form.text">تعليقك</label>
+            <textarea id="reviewText" rows="3" data-i18n-ph="review.form.text.ph" placeholder="شارك تجربتك مع جربني..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" data-i18n="review.form.submit">⭐ أرسل تقييمي</button>
+        </form>
+      </div>
+
+      <!-- Reviews List -->
+      <div id="reviewsList" class="reviews-list"></div>
+    </div>
+  </section>
+
   <!-- ===== ORDER ===== -->
   <section class="order-section" id="order">
     <div class="container">
@@ -261,6 +303,7 @@
         <a href="#products" data-i18n="nav.products">منتجاتنا</a>
         <a href="#why-us" data-i18n="nav.whyus">لماذا جربني</a>
         <a href="#order" data-i18n="nav.order">اطلب الآن</a>
+        <a href="#reviews" data-i18n="nav.reviews">التقييمات</a>
         <a href="#contact" data-i18n="nav.contact">تواصل معنا</a>
       </div>
       <div class="footer-fruits">
