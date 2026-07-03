@@ -452,36 +452,54 @@ function playNotifSound() {
 }
 
 // ===== GALLERY =====
-let pendingGalleryImage = '';
+let pendingGalleryImages = []; // array of base64 strings
 
 document.getElementById('galleryUploadArea').addEventListener('click', () => {
   document.getElementById('galleryFileInput').click();
 });
 
 document.getElementById('galleryFileInput').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    pendingGalleryImage = ev.target.result;
-    const wrap = document.getElementById('galleryPreviewWrap');
-    document.getElementById('galleryPreviewImg').src = pendingGalleryImage;
-    wrap.classList.remove('hidden');
-  };
-  reader.readAsDataURL(file);
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
+  pendingGalleryImages = [];
+  const wrap = document.getElementById('galleryPreviewWrap');
+  wrap.classList.remove('hidden');
+  wrap.innerHTML = '';
+
+  let loaded = 0;
+  files.forEach((file, idx) => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      pendingGalleryImages[idx] = ev.target.result;
+      const img = document.createElement('img');
+      img.src = ev.target.result;
+      wrap.appendChild(img);
+      loaded++;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Update button text to show count
+  const btn = document.getElementById('addGalleryPhotoBtn');
+  btn.textContent = `💾 إضافة ${files.length} صورة`;
 });
 
 document.getElementById('addGalleryPhotoBtn').addEventListener('click', () => {
-  if (!pendingGalleryImage) { showToast('اختر صورة أولاً', true); return; }
+  if (!pendingGalleryImages.length) { showToast('اختر صورة أولاً', true); return; }
   const caption = document.getElementById('galleryCaptionInput').value.trim();
-  JARREBNI.saveGalleryPhoto({ id: 'GAL-' + Date.now(), image: pendingGalleryImage, caption });
-  pendingGalleryImage = '';
+  pendingGalleryImages.forEach((img, i) => {
+    JARREBNI.saveGalleryPhoto({ id: 'GAL-' + Date.now() + i, image: img, caption });
+  });
+  const count = pendingGalleryImages.length;
+  pendingGalleryImages = [];
   document.getElementById('galleryCaptionInput').value = '';
-  document.getElementById('galleryPreviewWrap').classList.add('hidden');
-  document.getElementById('galleryPreviewImg').src = '';
+  const wrap = document.getElementById('galleryPreviewWrap');
+  wrap.classList.add('hidden');
+  wrap.innerHTML = '';
   document.getElementById('galleryFileInput').value = '';
+  document.getElementById('addGalleryPhotoBtn').textContent = '💾 إضافة الصورة';
   renderAdminGallery();
-  showToast('✓ تمت إضافة الصورة');
+  showToast(`✓ تمت إضافة ${count} صورة`);
 });
 
 document.getElementById('clearAllGalleryBtn').addEventListener('click', () => {
