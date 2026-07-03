@@ -452,7 +452,7 @@ function playNotifSound() {
 }
 
 // ===== GALLERY =====
-let pendingGalleryImages = []; // array of base64 strings
+let pendingGalleryImages = []; // { data: base64, caption: '' }
 
 document.getElementById('galleryUploadArea').addEventListener('click', () => {
   document.getElementById('galleryFileInput').click();
@@ -461,43 +461,49 @@ document.getElementById('galleryUploadArea').addEventListener('click', () => {
 document.getElementById('galleryFileInput').addEventListener('change', (e) => {
   const files = Array.from(e.target.files);
   if (!files.length) return;
-  pendingGalleryImages = [];
+
+  const btn  = document.getElementById('addGalleryPhotoBtn');
   const wrap = document.getElementById('galleryPreviewWrap');
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري التحميل...';
   wrap.classList.remove('hidden');
-  wrap.innerHTML = '';
 
   let loaded = 0;
-  files.forEach((file, idx) => {
+  files.forEach((file) => {
     const reader = new FileReader();
     reader.onload = (ev) => {
-      pendingGalleryImages[idx] = ev.target.result;
+      pendingGalleryImages.push({ data: ev.target.result, caption: '' });
+
+      // add thumbnail
       const img = document.createElement('img');
       img.src = ev.target.result;
       wrap.appendChild(img);
+
       loaded++;
+      if (loaded === files.length) {
+        btn.disabled = false;
+        btn.textContent = `💾 إضافة ${pendingGalleryImages.length} صورة`;
+      }
     };
     reader.readAsDataURL(file);
   });
 
-  // Update button text to show count
-  const btn = document.getElementById('addGalleryPhotoBtn');
-  btn.textContent = `💾 إضافة ${files.length} صورة`;
+  document.getElementById('galleryFileInput').value = '';
 });
 
 document.getElementById('addGalleryPhotoBtn').addEventListener('click', () => {
   if (!pendingGalleryImages.length) { showToast('اختر صورة أولاً', true); return; }
   const caption = document.getElementById('galleryCaptionInput').value.trim();
-  pendingGalleryImages.forEach((img, i) => {
-    JARREBNI.saveGalleryPhoto({ id: 'GAL-' + Date.now() + i, image: img, caption });
+  pendingGalleryImages.forEach((item, i) => {
+    JARREBNI.saveGalleryPhoto({ id: 'GAL-' + (Date.now() + i), image: item.data, caption });
   });
   const count = pendingGalleryImages.length;
   pendingGalleryImages = [];
   document.getElementById('galleryCaptionInput').value = '';
   const wrap = document.getElementById('galleryPreviewWrap');
-  wrap.classList.add('hidden');
   wrap.innerHTML = '';
-  document.getElementById('galleryFileInput').value = '';
-  document.getElementById('addGalleryPhotoBtn').textContent = '💾 إضافة الصورة';
+  wrap.classList.add('hidden');
+  document.getElementById('addGalleryPhotoBtn').textContent = '💾 إضافة الصور';
   renderAdminGallery();
   showToast(`✓ تمت إضافة ${count} صورة`);
 });
