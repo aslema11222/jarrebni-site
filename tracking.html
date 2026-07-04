@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تتبع طلبك - جربني</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍊</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #2E7D32;
+      --orange: #E8820C;
+      --orange-light: #FFF3E0;
+    }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #e8f5e9 0%, #fff8e1 100%);
+      min-height: 100vh;
+      direction: rtl;
+      color: #222;
+    }
+    header {
+      background: var(--green);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo { color: #fff; font-size: 1.4rem; font-weight: 900; text-decoration: none; }
+    .back-link { color: rgba(255,255,255,.85); font-size: .9rem; text-decoration: none; }
+    .back-link:hover { color: #fff; }
+
+    main {
+      max-width: 600px;
+      margin: 48px auto;
+      padding: 0 16px;
+    }
+    .track-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 36px 32px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.1);
+      text-align: center;
+    }
+    .track-icon { font-size: 3.5rem; margin-bottom: 12px; }
+    .track-card h1 { font-size: 1.7rem; color: var(--green); margin-bottom: 8px; }
+    .track-card p  { color: #666; margin-bottom: 28px; }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 14px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      direction: rtl;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .search-box input:focus { border-color: var(--green); }
+    .btn-search {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 22px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+    .btn-search:hover { background: #c96f0a; }
+    .btn-search:disabled { opacity: .6; cursor: not-allowed; }
+
+    #results { margin-top: 28px; text-align: right; }
+
+    .order-track-card {
+      background: #f9f9f9;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border-right: 5px solid var(--green);
+    }
+    .order-track-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .order-track-id   { font-weight: 700; color: #333; font-size: .95rem; }
+    .order-track-date { color: #999; font-size: .85rem; }
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: #fff;
+      font-weight: 700;
+      font-size: .85rem;
+    }
+
+    .progress-steps {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 18px 0 10px;
+      position: relative;
+    }
+    .progress-steps::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      left: 14px;
+      height: 3px;
+      background: #e0e0e0;
+      z-index: 0;
+    }
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .step-dot.done    { background: var(--green); }
+    .step-dot.current { background: var(--orange); box-shadow: 0 0 0 4px rgba(232,130,12,.2); }
+    .step-label { font-size: .72rem; color: #888; text-align: center; max-width: 60px; }
+    .step-label.done    { color: var(--green); font-weight: 700; }
+    .step-label.current { color: var(--orange); font-weight: 700; }
+
+    .order-detail { font-size: .9rem; color: #555; margin-top: 12px; line-height: 1.9; }
+
+    .no-orders {
+      text-align: center;
+      padding: 32px;
+      color: #888;
+      font-size: 1rem;
+    }
+    .no-orders span { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+    .error-msg { color: #e53935; font-size: .9rem; margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="shop.html" class="logo">🍊 جربني</a>
+  <a href="shop.html" class="back-link">← العودة للموقع</a>
+</header>
+
+<main>
+  <div class="track-card">
+    <div class="track-icon">📦</div>
+    <h1>تتبع طلبك</h1>
+    <p>أدخل رقم هاتفك لمعرفة حالة طلبك</p>
+
+    <div class="search-box">
+      <input type="tel" id="phoneInput" placeholder="مثال: 21694123456 أو 0094123456" />
+      <button class="btn-search" id="searchBtn">🔍 بحث</button>
+    </div>
+    <div class="error-msg hidden" id="errorMsg"></div>
+
+    <div id="results"></div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="tracking.js"></script>
+</body>
+</html>

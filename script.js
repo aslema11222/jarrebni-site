@@ -18,8 +18,11 @@ function showProductsLoading(on) {
 }
 
 // ===== SETTINGS =====
+let _adminWhatsapp = '';
+
 async function loadSettings() {
   const s = await JARREBNI.getSettings();
+  _adminWhatsapp = s.whatsapp || '';
   document.querySelectorAll('.wa-link').forEach(el => {
     el.href = `https://wa.me/${s.whatsapp}`;
   });
@@ -32,8 +35,26 @@ async function loadSettings() {
   }
   if (s.hours) {
     const el = document.getElementById('hoursDisplay');
-    if (el) el.innerHTML = s.hours.replace(/\n/g, '<br>');
+    if (el) el.innerHTML = s.hours.replace(/\n/g, '<br>') + '<br>' + getOpenStatusBadge();
   }
+}
+
+// ===== DYNAMIC HOURS =====
+function getOpenStatus() {
+  const opts = { timeZone: 'Africa/Tunis', hour: 'numeric', hour12: false, weekday: 'long' };
+  const parts = new Intl.DateTimeFormat('en-US', opts).formatToParts(new Date());
+  const day  = parts.find(p => p.type === 'weekday').value;
+  const hour = parseInt(parts.find(p => p.type === 'hour').value);
+  if (day === 'Friday') return { open: false, text: 'مغلق اليوم (الجمعة)' };
+  if (hour >= 8 && hour < 20) return { open: true,  text: 'مفتوح الآن' };
+  return { open: false, text: 'مغلق الآن' };
+}
+
+function getOpenStatusBadge() {
+  const s = getOpenStatus();
+  const color = s.open ? '#2E7D32' : '#e53935';
+  const dot   = s.open ? '🟢' : '🔴';
+  return `<span style="display:inline-block;margin-top:6px;padding:3px 10px;background:${color}22;color:${color};border-radius:20px;font-size:.85rem;font-weight:700">${dot} ${s.text}</span>`;
 }
 
 // ===== PROMO BAR =====
@@ -239,6 +260,21 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
     btn.textContent = '✓ تم إرسال طلبك!';
     btn.style.background = 'var(--green)';
     showToast('✓ تم استلام طلبك! سنتواصل معك قريباً');
+
+    // WhatsApp notification to admin
+    if (_adminWhatsapp) {
+      const waMsg = encodeURIComponent(
+        `✅ طلب جديد - جربني\n👤 ${name}\n📞 ${phone}\n📍 ${address}\n🛒 ${products || 'انظر الطلب'}\n💰 ${orderTotal} دت${notes ? '\n📝 ' + notes : ''}`
+      );
+      const waBtn = document.createElement('a');
+      waBtn.href = `https://wa.me/${_adminWhatsapp}?text=${waMsg}`;
+      waBtn.target = '_blank';
+      waBtn.style.cssText = 'display:block;margin-top:12px;padding:14px;background:#25D366;color:#fff;border-radius:12px;text-align:center;font-weight:700;text-decoration:none;font-size:1rem;';
+      waBtn.textContent = '💬 أكّد طلبك عبر واتساب';
+      btn.parentNode.insertBefore(waBtn, btn.nextSibling);
+      setTimeout(() => waBtn.remove(), 12000);
+    }
+
     setTimeout(() => {
       btn.textContent = '🚛 أرسل طلبي';
       btn.style.background = '';
