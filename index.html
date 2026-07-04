@@ -87,7 +87,7 @@
         </a>
 
         <!-- ADMIN -->
-        <div class="role-card admin" id="adminCard">
+        <a class="role-card admin" id="adminCard" href="admin.html">
           <div class="card-glow admin-glow"></div>
           <div class="role-icon-wrap admin-wrap">
             <span class="role-icon">⚙️</span>
@@ -103,37 +103,14 @@
             <span data-i18n="role.enter">دخول</span>
             <span class="btn-arrow">←</span>
           </div>
-        </div>
+        </a>
 
       </div>
     </section>
 
-    <!-- ADMIN AUTH -->
-    <section class="auth-section hidden" id="authSection">
-      <button class="back-btn" id="backBtn" data-i18n="back">→ رجوع</button>
-      <div class="auth-card">
-        <div class="auth-icon-wrap"><span>🔑</span></div>
-        <h2 data-i18n="auth.title">دخول المدير</h2>
-        <p data-i18n="auth.desc">أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
-        <form class="auth-form" id="authForm">
-          <div class="pwd-input-wrap">
-            <input type="password" id="adminPwd" data-i18n-ph="auth.ph"
-              placeholder="كلمة المرور" autocomplete="current-password" />
-            <button type="button" class="pwd-toggle" id="pwdToggle" title="إظهار/إخفاء">👁</button>
-          </div>
-          <p class="auth-error hidden" id="authError" data-i18n="auth.error">❌ كلمة المرور غير صحيحة</p>
-          <button type="submit" class="submit-btn" id="submitBtn">
-            <span id="submitText" data-i18n="auth.submit">دخول</span>
-            <span class="submit-arrow">←</span>
-          </button>
-        </form>
-        <p class="pwd-hint" data-i18n-html="auth.hint">كلمة المرور الافتراضية: <code>jarrebni2025</code></p>
-      </div>
-    </section>
 
   </main>
 
-  <script src="products-data.js"></script>
   <script src="i18n.js"></script>
   <script src="login.js"></script>
 </body>
