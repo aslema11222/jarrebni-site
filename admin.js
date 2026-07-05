@@ -125,11 +125,13 @@ document.getElementById('addProductBtn').addEventListener('click', () => {
   document.getElementById('modalTitle').textContent = 'إضافة منتج جديد';
   document.getElementById('editCategory').value     = currentAdminTab;
   document.getElementById('editId').value           = '';
-  document.getElementById('editEmoji').value        = '🍊';
-  document.getElementById('editName').value         = '';
-  document.getElementById('editDesc').value         = '';
-  document.getElementById('editPrice').value        = '';
-  document.getElementById('editUnit').value         = 'كغ';
+  document.getElementById('editEmoji').value           = '🍊';
+  document.getElementById('editName').value            = '';
+  document.getElementById('editDesc').value            = '';
+  document.getElementById('editPrice').value           = '';
+  document.getElementById('editUnit').value            = 'كغ';
+  document.getElementById('editPriceWholesale').value  = '';
+  document.getElementById('editMinWholesale').value    = '';
   setPreview('', '🍊');
   document.getElementById('deleteProductBtn').classList.add('hidden');
   document.getElementById('editModal').classList.remove('hidden');
@@ -147,9 +149,11 @@ function openEditModal(product, category) {
   document.getElementById('editId').value           = product.id;
   document.getElementById('editEmoji').value        = product.emoji;
   document.getElementById('editName').value         = product.name;
-  document.getElementById('editDesc').value         = product.desc;
-  document.getElementById('editPrice').value        = product.price;
-  document.getElementById('editUnit').value         = product.unit;
+  document.getElementById('editDesc').value             = product.desc;
+  document.getElementById('editPrice').value            = product.price;
+  document.getElementById('editUnit').value             = product.unit;
+  document.getElementById('editPriceWholesale').value   = product.priceWholesale || '';
+  document.getElementById('editMinWholesale').value     = product.minWholesale   || '';
   setPreview(product.image, product.emoji);
   document.getElementById('deleteProductBtn').classList.remove('hidden');
   document.getElementById('editModal').classList.remove('hidden');
@@ -201,12 +205,14 @@ document.getElementById('removeImageBtn').addEventListener('click', () => {
 
 // ===== SAVE PRODUCT =====
 document.getElementById('saveProductBtn').addEventListener('click', async () => {
-  const name  = document.getElementById('editName').value.trim();
-  const emoji = document.getElementById('editEmoji').value.trim() || '🛒';
-  const desc  = document.getElementById('editDesc').value.trim();
-  const price = document.getElementById('editPrice').value.trim();
-  const unit  = document.getElementById('editUnit').value.trim() || 'كغ';
-  const cat   = document.getElementById('editCategory').value;
+  const name           = document.getElementById('editName').value.trim();
+  const emoji          = document.getElementById('editEmoji').value.trim() || '🛒';
+  const desc           = document.getElementById('editDesc').value.trim();
+  const price          = document.getElementById('editPrice').value.trim();
+  const unit           = document.getElementById('editUnit').value.trim() || 'كغ';
+  const cat            = document.getElementById('editCategory').value;
+  const priceWholesale = document.getElementById('editPriceWholesale').value.trim();
+  const minWholesale   = document.getElementById('editMinWholesale').value.trim();
 
   if (!name || !price) { showToast('يرجى ملء الاسم والسعر', true); return; }
 
@@ -217,7 +223,8 @@ document.getElementById('saveProductBtn').addEventListener('click', async () => 
   const ok = await JARREBNI.upsertProduct({
     id:       currentEditId || (cat[0] + Date.now()),
     category: cat,
-    emoji, image: currentImageData, name, desc, price, unit
+    emoji, image: currentImageData, name, desc, price, unit,
+    priceWholesale, minWholesale
   });
 
   btn.disabled = false;

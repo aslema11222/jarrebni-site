@@ -120,10 +120,14 @@ function renderGrid(gridId, items) {
     const waNum = document.querySelector('.wa-link')?.href?.split('wa.me/')?.[1]?.split('?')?.[0] || '';
     const waMsg = encodeURIComponent(`مرحباً جربني! أريد طلب: ${p.name} (${p.price} دت/${p.unit})`);
     const waHref = waNum && waNum !== '216XXXXXXXX' ? `https://wa.me/${waNum}?text=${waMsg}` : '#';
+    const wholesaleHtml = p.priceWholesale
+      ? `<div class="price-wholesale">💼 جملة: <strong>${p.priceWholesale} دت/${pUnit}</strong> <span class="wholesale-min">(من ${p.minWholesale || '10'} ${pUnit})</span></div>`
+      : '';
     card.innerHTML = `
       ${thumb}
       <h3>${pName}</h3>
       <p>${pDesc}</p>
+      ${wholesaleHtml}
       <div class="product-footer">
         <span class="price">${p.price} دت/${pUnit}</span>
         <button class="btn-add">${addLabel}</button>

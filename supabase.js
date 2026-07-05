@@ -53,7 +53,9 @@ const JARREBNI = (() => {
       id: r.id, category: r.category,
       emoji: r.emoji, image: r.image || '',
       name: r.name, desc: r.description,
-      price: r.price, unit: r.unit
+      price: r.price, unit: r.unit,
+      priceWholesale: r.price_wholesale || '',
+      minWholesale:   r.min_wholesale   || '10'
     });
     return {
       fruits:  data.filter(p => p.category === 'fruits').map(map),
@@ -63,14 +65,16 @@ const JARREBNI = (() => {
 
   async function upsertProduct(product) {
     const { error } = await _sb.from('products').upsert({
-      id:          product.id,
-      category:    product.category,
-      emoji:       product.emoji       || '🛒',
-      image:       product.image       || '',
-      name:        product.name,
-      description: product.desc        || '',
-      price:       String(product.price),
-      unit:        product.unit        || 'كغ'
+      id:              product.id,
+      category:        product.category,
+      emoji:           product.emoji          || '🛒',
+      image:           product.image          || '',
+      name:            product.name,
+      description:     product.desc           || '',
+      price:           String(product.price),
+      unit:            product.unit           || 'كغ',
+      price_wholesale: String(product.priceWholesale || ''),
+      min_wholesale:   String(product.minWholesale   || '10')
     });
     return !error;
   }

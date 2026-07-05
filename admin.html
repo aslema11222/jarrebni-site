@@ -312,12 +312,23 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>السعر (دت) *</label>
+            <label>السعر (دت) — تجزئة *</label>
             <input type="number" id="editPrice" min="0" placeholder="1.5" />
           </div>
           <div class="form-group">
             <label>الوحدة</label>
             <input type="text" id="editUnit" placeholder="كغ / حبة / علبة" />
+          </div>
+        </div>
+        <div class="form-row" style="background:#fff8e1;border-radius:12px;padding:12px;border:1.5px solid #ffe082;">
+          <div class="form-group">
+            <label>💼 سعر الجملة (دت)</label>
+            <input type="number" id="editPriceWholesale" min="0" placeholder="اتركه فارغاً إن لم يوجد" />
+            <small>سعر خاص للكميات الكبيرة</small>
+          </div>
+          <div class="form-group">
+            <label>الحد الأدنى للجملة</label>
+            <input type="text" id="editMinWholesale" placeholder="مثال: 10 كغ أو صندوق" />
           </div>
         </div>
       </div>
