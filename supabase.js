@@ -84,7 +84,6 @@ const JARREBNI = (() => {
   async function toggleFeatured(id, featured) {
     const { error } = await _sb.from('products').update({ featured }).eq('id', id);
     return !error;
-    return !error;
   }
 
   async function deleteProduct(id) {

@@ -1,13 +1,36 @@
+// ===== PHONE UTILS =====
+function normalizePhone(raw) {
+  let p = raw.replace(/[\s\-\.\(\)]/g, '');
+  if (p.startsWith('+216')) p = p.slice(4);
+  else if (p.startsWith('00216')) p = p.slice(5);
+  else if (p.startsWith('216') && p.length === 11) p = p.slice(3);
+  return p;
+}
+function isValidTunisianPhone(raw) {
+  return /^[2579]\d{7}$/.test(normalizePhone(raw));
+}
+
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
   showProductsLoading(true);
-  await loadSettings();
-  await renderProducts();
+  try {
+    await loadSettings();
+    await renderProducts();
+  } catch (err) {
+    showNetworkError();
+  }
   showProductsLoading(false);
   initReveal();
   initPromoBar();
-  await initReviews();
+  try { await initReviews(); } catch (_) {}
 });
+
+function showNetworkError() {
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#e53935;color:#fff;text-align:center;padding:12px 16px;font-family:Cairo,sans-serif;font-size:.95rem;direction:rtl';
+  banner.textContent = '⚠️ تعذّر الاتصال بالخادم — تحقق من اتصالك بالإنترنت وأعد تحميل الصفحة';
+  document.body.prepend(banner);
+}
 
 function showProductsLoading(on) {
   ['fruitsGrid', 'veggiesGrid'].forEach(id => {
@@ -281,6 +304,14 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
   const products = document.getElementById('orderProducts').value.trim();
   const notes    = document.getElementById('orderNotes').value.trim();
 
+  if (!isValidTunisianPhone(phone)) {
+    showToast('📞 رقم الهاتف غير صحيح — أدخل رقماً تونسياً مثل 21234567');
+    btn.disabled = false;
+    btn.textContent = '🚛 أرسل طلبي';
+    return;
+  }
+  const phoneCleaned = normalizePhone(phone);
+
   const orderTotal = Object.values(cart)
     .reduce((sum, { product: p, qty }) => sum + parseFloat(p.price) * qty, 0)
     .toFixed(2);
@@ -297,7 +328,7 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
   const ok = await JARREBNI.saveOrder({
     id:       'ORD-' + Date.now(),
     date:     new Date().toLocaleString('ar-TN'),
-    name, phone, address, products, notes,
+    name, phone: phoneCleaned, address, products, notes,
     total:    orderTotal,
     status:   'new'
   });

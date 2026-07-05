@@ -1,3 +1,11 @@
+function normalizePhone(raw) {
+  let p = raw.replace(/[\s\-\.\(\)]/g, '');
+  if (p.startsWith('+216')) p = p.slice(4);
+  else if (p.startsWith('00216')) p = p.slice(5);
+  else if (p.startsWith('216') && p.length === 11) p = p.slice(3);
+  return p;
+}
+
 const STATUS_MAP = {
   new:        { label: '🆕 جديد',           color: '#E8820C', step: 0 },
   confirmed:  { label: '✅ مؤكد',           color: '#2196F3', step: 1 },
@@ -22,7 +30,8 @@ document.getElementById('phoneInput').addEventListener('keydown', (e) => {
 });
 
 async function search() {
-  const phone   = document.getElementById('phoneInput').value.trim();
+  const raw     = document.getElementById('phoneInput').value.trim();
+  const phone   = normalizePhone(raw);
   const errorEl = document.getElementById('errorMsg');
   const results = document.getElementById('results');
   const btn     = document.getElementById('searchBtn');
@@ -30,8 +39,8 @@ async function search() {
   errorEl.textContent = '';
   errorEl.classList.add('hidden');
 
-  if (!phone) {
-    errorEl.textContent = 'يرجى إدخال رقم الهاتف';
+  if (!phone || !/^[2579]\d{7}$/.test(phone)) {
+    errorEl.textContent = 'أدخل رقم هاتف تونسي صحيح (مثال: 21234567)';
     errorEl.classList.remove('hidden');
     return;
   }
@@ -50,7 +59,10 @@ async function search() {
   btn.textContent = '🔍 بحث';
 
   if (error) {
-    errorEl.textContent = 'حدث خطأ — تأكد من رقم الهاتف وحاول مجدداً';
+    const isNetwork = !navigator.onLine || error.message?.includes('fetch');
+    errorEl.textContent = isNetwork
+      ? '⚠️ لا يوجد اتصال بالإنترنت — تحقق من اتصالك وحاول مجدداً'
+      : 'حدث خطأ — تأكد من رقم الهاتف وحاول مجدداً';
     errorEl.classList.remove('hidden');
     return;
   }

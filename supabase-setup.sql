@@ -1,21 +1,28 @@
 -- ============================================================
---  JARREBNI — Supabase Schema
+--  JARREBNI — Supabase Schema  (PostgreSQL valide)
 --  Coller dans : projet Supabase > SQL Editor > New query
 --  Puis cliquer RUN
+--
+--  NOTE : Le linter VS Code signale des fausses erreurs sur
+--  ON CONFLICT car il utilise un parseur Oracle/ANSI.
+--  Ce fichier est 100% correct pour PostgreSQL / Supabase.
 -- ============================================================
 
 -- 1. TABLES ------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS products (
-  id          TEXT PRIMARY KEY,
-  category    TEXT NOT NULL CHECK (category IN ('fruits', 'veggies')),
-  emoji       TEXT    DEFAULT '🛒',
-  image       TEXT    DEFAULT '',
-  name        TEXT    NOT NULL,
-  description TEXT    DEFAULT '',
-  price       TEXT    NOT NULL,
-  unit        TEXT    DEFAULT 'كغ',
-  created_at  TIMESTAMPTZ DEFAULT NOW()
+  id              TEXT PRIMARY KEY,
+  category        TEXT NOT NULL CHECK (category IN ('fruits', 'veggies')),
+  emoji           TEXT    DEFAULT '🛒',
+  image           TEXT    DEFAULT '',
+  name            TEXT    NOT NULL,
+  description     TEXT    DEFAULT '',
+  price           TEXT    NOT NULL,
+  unit            TEXT    DEFAULT 'كغ',
+  price_wholesale TEXT    DEFAULT '',
+  min_wholesale   TEXT    DEFAULT '10',
+  featured        BOOLEAN DEFAULT false,
+  created_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS orders (
@@ -51,7 +58,8 @@ INSERT INTO settings (key, value) VALUES
   ('phone',     '+216 XX XXX XXX'),
   ('whatsapp',  '216XXXXXXXX'),
   ('promoText', '🔥 عرض الأسبوع: توصيل مجاني في بنزرت الشمالية!'),
-  ('hours',     'السبت - الخميس: 8:00ص - 8:00م' || chr(10) || 'الجمعة: مغلق')
+  ('hours',     'السبت - الخميس: 8:00ص - 8:00م'),
+  ('minOrder',  '0')
 ON CONFLICT (key) DO NOTHING;
 
 INSERT INTO products (id, category, emoji, name, description, price, unit) VALUES
