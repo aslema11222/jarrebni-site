@@ -765,6 +765,16 @@ a { text-decoration: none; color: inherit; }
   transition: background .2s;
 }
 .btn-delete-order:hover { background: #ffd6d6; }
+.btn-print-order {
+  padding: .4rem .6rem;
+  background: #e3f2fd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background .2s;
+}
+.btn-print-order:hover { background: #bbdefb; }
 
 /* ===== CUSTOMERS ===== */
 .customers-grid {

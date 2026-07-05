@@ -240,6 +240,11 @@
               <small>يظهر في الشريط الأخضر أعلى الموقع</small>
             </div>
             <div class="form-group">
+              <label>💰 الحد الأدنى للطلب (دت)</label>
+              <input type="number" id="settingMinOrder" placeholder="0" min="0" />
+              <small>0 = لا يوجد حد أدنى للطلب</small>
+            </div>
+            <div class="form-group">
               <label>🕐 ساعات العمل</label>
               <textarea id="settingHours" rows="3" placeholder="السبت - الخميس: 8:00ص - 8:00م&#10;الجمعة: مغلق"></textarea>
               <small>تظهر في قسم "تواصل معنا" بالموقع</small>
@@ -333,6 +338,10 @@
         </div>
       </div>
 
+      <div style="padding:0 28px 16px;display:flex;align-items:center;gap:12px">
+        <input type="checkbox" id="editFeatured" style="width:20px;height:20px;cursor:pointer;accent-color:#F5A034" />
+        <label for="editFeatured" style="cursor:pointer;font-weight:700;color:#c67c00">🌟 منتج مميز (يظهر في عروض اليوم)</label>
+      </div>
       <div class="modal-footer">
         <button class="btn-save" id="saveProductBtn">💾 حفظ</button>
         <button class="btn-delete hidden" id="deleteProductBtn">🗑️ حذف</button>

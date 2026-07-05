@@ -55,7 +55,8 @@ const JARREBNI = (() => {
       name: r.name, desc: r.description,
       price: r.price, unit: r.unit,
       priceWholesale: r.price_wholesale || '',
-      minWholesale:   r.min_wholesale   || '10'
+      minWholesale:   r.min_wholesale   || '10',
+      featured:       r.featured        || false
     });
     return {
       fruits:  data.filter(p => p.category === 'fruits').map(map),
@@ -74,8 +75,15 @@ const JARREBNI = (() => {
       price:           String(product.price),
       unit:            product.unit           || 'كغ',
       price_wholesale: String(product.priceWholesale || ''),
-      min_wholesale:   String(product.minWholesale   || '10')
+      min_wholesale:   String(product.minWholesale   || '10'),
+      featured:        product.featured || false
     });
+    return !error;
+  }
+
+  async function toggleFeatured(id, featured) {
+    const { error } = await _sb.from('products').update({ featured }).eq('id', id);
+    return !error;
     return !error;
   }
 
@@ -114,7 +122,8 @@ const JARREBNI = (() => {
       phone:     '+216 XX XXX XXX',
       whatsapp:  '216XXXXXXXX',
       promoText: '🔥 عرض الأسبوع: توصيل مجاني في بنزرت الشمالية!',
-      hours:     'السبت - الخميس: 8:00ص - 8:00م\nالجمعة: مغلق'
+      hours:     'السبت - الخميس: 8:00ص - 8:00م\nالجمعة: مغلق',
+      minOrder:  '0'
     };
     const { data } = await _sb.from('settings').select('key, value');
     (data || []).forEach(row => { defaults[row.key] = row.value; });
@@ -213,7 +222,7 @@ const JARREBNI = (() => {
 
   return {
     login, logout, isLoggedIn, changePassword, getAdminEmail,
-    getProducts, upsertProduct, deleteProduct, resetProducts,
+    getProducts, upsertProduct, deleteProduct, resetProducts, toggleFeatured,
     getSettings, saveSettings,
     getOrders, saveOrder, updateOrderStatus, deleteOrder, deleteAllOrders,
     getReviews, saveReview, deleteReview, deleteAllReviews

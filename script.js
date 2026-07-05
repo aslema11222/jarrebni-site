@@ -94,11 +94,44 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 // ===== RENDER PRODUCTS =====
+let _allProducts = { fruits: [], veggies: [] };
+
 async function renderProducts() {
   const data = await JARREBNI.getProducts();
+  _allProducts = data;
+  renderFeatured(data);
   renderGrid('fruitsGrid', data.fruits);
   renderGrid('veggiesGrid', data.veggies);
 }
+
+function renderFeatured(data) {
+  const featured = [...data.fruits, ...data.veggies].filter(p => p.featured);
+  const section  = document.getElementById('featuredSection');
+  if (!section) return;
+  if (featured.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  renderGrid('featuredGrid', featured);
+}
+
+// ===== SEARCH =====
+document.getElementById('productSearch')?.addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  const noRes = document.getElementById('searchNoResults');
+  if (!q) {
+    renderGrid('fruitsGrid', _allProducts.fruits);
+    renderGrid('veggiesGrid', _allProducts.veggies);
+    noRes?.classList.add('hidden');
+    return;
+  }
+  const filter = items => items.filter(p =>
+    p.name.toLowerCase().includes(q) || (p.desc || '').toLowerCase().includes(q)
+  );
+  const fruits  = filter(_allProducts.fruits);
+  const veggies = filter(_allProducts.veggies);
+  renderGrid('fruitsGrid', fruits);
+  renderGrid('veggiesGrid', veggies);
+  if (noRes) noRes.classList.toggle('hidden', fruits.length + veggies.length > 0);
+});
 
 function renderGrid(gridId, items) {
   const grid = document.getElementById(gridId);
@@ -251,6 +284,15 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
   const orderTotal = Object.values(cart)
     .reduce((sum, { product: p, qty }) => sum + parseFloat(p.price) * qty, 0)
     .toFixed(2);
+
+  const settings  = await JARREBNI.getSettings();
+  const minOrder  = parseFloat(settings.minOrder || '0');
+  if (minOrder > 0 && parseFloat(orderTotal) < minOrder) {
+    showToast(`الحد الأدنى للطلب هو ${minOrder} دت`);
+    btn.disabled = false;
+    btn.textContent = '🚛 أرسل طلبي';
+    return;
+  }
 
   const ok = await JARREBNI.saveOrder({
     id:       'ORD-' + Date.now(),

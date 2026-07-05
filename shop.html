@@ -109,6 +109,17 @@
     </div>
   </div>
 
+  <!-- ===== FEATURED ===== -->
+  <section class="featured-section" id="featuredSection" style="display:none">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" style="background:#F5A034">🌟 عروض اليوم</span>
+        <h2>منتجات مميزة</h2>
+      </div>
+      <div class="products-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
   <!-- ===== PRODUCTS ===== -->
   <section class="products" id="products">
     <div class="container">
@@ -117,12 +128,16 @@
         <h2 data-i18n="products.title">أطيب المنتجات الطازجة</h2>
         <p data-i18n="products.desc">نختار لك الأجود والأطيب من الفواكه والخضروات الموسمية</p>
       </div>
+      <div class="search-bar-wrap">
+        <input type="text" id="productSearch" placeholder="🔍 ابحث عن منتج..." autocomplete="off" />
+      </div>
       <div class="tabs">
         <button class="tab active" data-tab="fruits" data-i18n="tab.fruits">🍊 الفواكه</button>
         <button class="tab" data-tab="veggies"       data-i18n="tab.veggies">🥦 الخضروات</button>
       </div>
       <div class="products-grid" id="fruitsGrid"></div>
       <div class="products-grid hidden" id="veggiesGrid"></div>
+      <p class="search-no-results hidden" id="searchNoResults">لم يتم العثور على منتجات 🔍</p>
     </div>
   </section>
 

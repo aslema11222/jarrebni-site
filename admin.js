@@ -132,6 +132,7 @@ document.getElementById('addProductBtn').addEventListener('click', () => {
   document.getElementById('editUnit').value            = 'كغ';
   document.getElementById('editPriceWholesale').value  = '';
   document.getElementById('editMinWholesale').value    = '';
+  document.getElementById('editFeatured').checked      = false;
   setPreview('', '🍊');
   document.getElementById('deleteProductBtn').classList.add('hidden');
   document.getElementById('editModal').classList.remove('hidden');
@@ -154,6 +155,7 @@ function openEditModal(product, category) {
   document.getElementById('editUnit').value             = product.unit;
   document.getElementById('editPriceWholesale').value   = product.priceWholesale || '';
   document.getElementById('editMinWholesale').value     = product.minWholesale   || '';
+  document.getElementById('editFeatured').checked       = product.featured       || false;
   setPreview(product.image, product.emoji);
   document.getElementById('deleteProductBtn').classList.remove('hidden');
   document.getElementById('editModal').classList.remove('hidden');
@@ -220,11 +222,12 @@ document.getElementById('saveProductBtn').addEventListener('click', async () => 
   btn.disabled = true;
   btn.textContent = '⏳ جاري الحفظ...';
 
+  const featured = document.getElementById('editFeatured').checked;
   const ok = await JARREBNI.upsertProduct({
     id:       currentEditId || (cat[0] + Date.now()),
     category: cat,
     emoji, image: currentImageData, name, desc, price, unit,
-    priceWholesale, minWholesale
+    priceWholesale, minWholesale, featured
   });
 
   btn.disabled = false;
@@ -260,6 +263,7 @@ async function loadSettingsForm() {
   document.getElementById('settingWhatsapp').value = s.whatsapp  || '';
   document.getElementById('settingPromo').value    = s.promoText || '';
   document.getElementById('settingHours').value    = s.hours     || '';
+  document.getElementById('settingMinOrder').value = s.minOrder  || '0';
   const email = await JARREBNI.getAdminEmail();
   const emailEl = document.getElementById('adminEmailDisplay');
   if (emailEl) emailEl.value = email;
@@ -283,10 +287,12 @@ document.getElementById('saveSettingsBtn').addEventListener('click', async () =>
     if (!pwdOk) { showToast('❌ خطأ في تغيير كلمة المرور', true); btn.disabled = false; return; }
   }
 
-  const updates = {};
+  const minOrder = document.getElementById('settingMinOrder').value || '0';
+  const updates  = {};
   if (phone)    updates.phone     = phone;
   if (whatsapp) updates.whatsapp  = whatsapp;
   updates.promoText = promo;
+  updates.minOrder  = minOrder;
   if (hours)    updates.hours     = hours;
 
   const ok = await JARREBNI.saveSettings(updates);
@@ -400,6 +406,7 @@ async function renderOrders() {
           <option value="cancelled"  ${order.status==='cancelled'  ?'selected':''}>❌ ملغى</option>
         </select>
         <a class="btn-call" href="tel:${order.phone}">📞 اتصل</a>
+        <button class="btn-print-order" data-id="${order.id}">🖨️</button>
         <button class="btn-delete-order" data-id="${order.id}">🗑️</button>
       </div>
     `;
@@ -411,6 +418,13 @@ async function renderOrders() {
       await JARREBNI.updateOrderStatus(sel.dataset.id, sel.value);
       await renderOrders();
       showToast('✓ تم تحديث حالة الطلب');
+    });
+  });
+
+  list.querySelectorAll('.btn-print-order').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const order = orders.find(o => o.id === btn.dataset.id);
+      if (order) printInvoice(order);
     });
   });
 
@@ -586,6 +600,47 @@ document.getElementById('clearAllReviewsBtn').addEventListener('click', async ()
     showToast('❌ خطأ', true);
   }
 });
+
+// ===== PRINT INVOICE =====
+function printInvoice(order) {
+  const win = window.open('', '_blank', 'width=700,height=900');
+  win.document.write(`<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<title>فاتورة ${order.id}</title>
+<style>
+  body{font-family:Arial,sans-serif;padding:40px;color:#222;max-width:600px;margin:auto}
+  h1{color:#2E7D32;font-size:1.6rem;margin-bottom:4px}
+  .sub{color:#888;margin-bottom:24px}
+  table{width:100%;border-collapse:collapse;margin:20px 0}
+  th{background:#2E7D32;color:#fff;padding:10px;text-align:right}
+  td{padding:10px;border-bottom:1px solid #eee;text-align:right}
+  .total{font-size:1.2rem;font-weight:bold;color:#E8820C;text-align:left;margin-top:12px}
+  .footer{margin-top:32px;color:#aaa;font-size:.85rem;text-align:center}
+  @media print{button{display:none}}
+</style>
+</head>
+<body>
+<h1>🍊 جربني — فاتورة طلب</h1>
+<p class="sub">بنزرت الشمالية، تونس</p>
+<table>
+  <tr><th>البيان</th><th>التفاصيل</th></tr>
+  <tr><td>رقم الطلب</td><td>${order.id}</td></tr>
+  <tr><td>التاريخ</td><td>${order.date || ''}</td></tr>
+  <tr><td>الاسم</td><td>${order.name}</td></tr>
+  <tr><td>الهاتف</td><td>${order.phone}</td></tr>
+  <tr><td>العنوان</td><td>${order.address}</td></tr>
+  <tr><td>المنتجات</td><td>${(order.products || '').replace(/\n/g,'<br>')}</td></tr>
+  ${order.notes ? `<tr><td>ملاحظات</td><td>${order.notes}</td></tr>` : ''}
+  <tr><td>الحالة</td><td>${order.status || ''}</td></tr>
+</table>
+<div class="total">المجموع: ${order.total || '0'} دت</div>
+<div class="footer">شكراً لتعاملكم مع جربني 🍊 — jarrebni-site.pages.dev</div>
+<br/><button onclick="window.print()" style="padding:10px 24px;background:#2E7D32;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer">🖨️ طباعة</button>
+</body></html>`);
+  win.document.close();
+}
 
 // ===== TOAST =====
 let toastTimer;
